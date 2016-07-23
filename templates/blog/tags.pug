@@ -1,0 +1,20 @@
+extends ../layout
+
+block main
+  section.header
+    .content
+      h1.title tags
+
+  section.index  
+    if tags && tags.length
+      ul
+        each tag in tags
+          li.block
+            h1
+              a(href=tag.path)
+                span.count [#{tag.posts.length}] 
+                span.name !{tag.title} 
+              
+    else
+      .content
+        h2 nothing has been tagged yet

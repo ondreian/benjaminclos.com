@@ -1,0 +1,17 @@
+extends ../layout
+
+block main
+  article.container.tags
+    header.heading
+      .content
+        h1.title= tag.title
+    section.list
+      .content
+        ol.posts
+          each post in tag.posts
+            li.post
+              .content
+                h2
+                  a(href='/'+post.path)!= post.title
+                h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
+                h4.excerpt!= post.excerpt

@@ -1,0 +1,18 @@
+extends ../layout
+
+block main
+  section.header
+    .content
+      h1.title posts
+
+  section.index  
+    if posts && posts.length
+      ul.posts
+        each post in posts
+          li.post.block
+            h2.title
+              a(href=post.path)!= post.title
+            h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
+            h4.excerpt!= post.excerpt
+    else
+      h2 nothing has been written yet

@@ -1,0 +1,42 @@
+extends ../layout
+
+block og
+  meta(property="og:title", content=title)
+  meta(property="og:type", content="article")
+  meta(property="og:url", content=permalink)
+
+  if author || site.author
+    meta(property="og:author", content=author || site.author)
+
+  if excerpt
+    meta(property="og:description", content=excerpt)
+  
+  if publishDate
+    meta(property="og:published_time", content=publishDate.toISOString())
+  
+  if tags.length
+    meta(property="og:tags", content=tags.join(', '))
+
+block main
+  article.container
+    header.heading.block
+      h1.title=title
+      h3.author=author
+      h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
+  
+    .content.block!=contents
+
+  if site.disqus
+    section.section.comments
+      .content
+        #disqus_thread
+          script.
+            (function() {  // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = '//#{site.disqus}.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+            })();
+          noscript
+            | Please enable JavaScript to view the 
+            a(href='https://disqus.com/?ref_noscript', rel='nofollow') comments powered by Disqus.
