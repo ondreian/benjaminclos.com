@@ -18,7 +18,7 @@ module.exports = {
               "transform-class-properties"
             , "pipe-operator"
           ]
-        , "sourceMaps": "inline"
+        //, "sourceMaps": "inline"
       }
 
     , blog : {

@@ -1,4 +1,5 @@
 export default [
     { href: "/"     , text: "home" }
-  , { href: "/blog" , text: "blog" }
+  , { href: "/about", text: "about"}
+  , { href: "external:/blog" , text: "blog" }
 ]

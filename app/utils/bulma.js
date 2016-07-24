@@ -18,6 +18,11 @@ function argParser (className) {
   }
 }
 
+export const raw = classNames.reduce( (raw, className)=> {
+  raw[ camelCaseCSS(className) ] = css[className]
+  return raw
+}, {})
+
 export const styles = classNames.reduce( (styles, className)=> {
   styles[ camelCaseCSS(className) ] = (prev) => {
     const dynamicClass = `.${css[className]}`
@@ -26,7 +31,7 @@ export const styles = classNames.reduce( (styles, className)=> {
       : prev + dynamicClass
   }
   return styles
-}, () => "")
+}, (className) => className ? `.${className}` : "")
 
 /**
  * translates all of our CSS definitions to Mithril definitions

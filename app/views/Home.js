@@ -13,10 +13,4 @@ export default class Home {
     return m.component(Landscape, ctrl)
       | App()
   }
-
-  constructor (ctrl) {
-    
-  }
-
-  
 }

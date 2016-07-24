@@ -1,8 +1,15 @@
-import m    from "mithril"
-import Home from "views/Home"
+import m         from "mithril"
+import Home      from "views/Home"
+import About     from "views/About"
+import onlyEvery from "utils/onlyEvery"
 
-document.addEventListener('DOMContentLoaded', () => {
+function boot () {
   m.route(document.body, "/", {
-    "/": Home
-  })
-})
+      "/"      : Home
+    , "/about" : About
+  })	
+}
+
+window.onresize = onlyEvery( 1000 / 28 ,  m.redraw )
+
+document.addEventListener('DOMContentLoaded', boot)

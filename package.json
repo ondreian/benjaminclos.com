@@ -1,7 +1,7 @@
 {
-  "name": "your-app",
-  "description": "Description",
-  "author": "Your Name",
+  "name": "i.am.benjaminclos.com",
+  "description": "my personal website",
+  "author": "Benjamin Clos",
   "version": "0.0.1",
   "repository": {
     "type": "git",
@@ -14,6 +14,7 @@
   "dependencies": {
     "bluebird": "^3.4.1",
     "bulma": "^0.1.0",
+    "eventemitter2": "^2.0.0",
     "mithril": "^0.2.5"
   },
   "devDependencies": {

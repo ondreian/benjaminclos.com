@@ -14,21 +14,20 @@ html
     block og
   body.blog
     block body
-      .app
-        section.section.navigation
-          .container      
-            nav.nav
-              .nav-left
-              .nav-center
-                a.nav-item(href="/") home
-                a.nav-item(href="/blog") blog
-                a.nav-item(href="/blog/tags") tags
-              .nav-right
+      div(class=css.app)
+        div(class=css.top+css.navigation+css.detached)
+          div(class=css.container)
+            div(class=css.nav)
+              div(class=css.navCenter)
+                a(class=css.navItem, href="/") home
+                a(class=css.navItem, href="/blog") blog
+                a(class=css.navItem, href="/blog/tags") tags
+             
                     
-        section.section.main
-          .container        
-            .columns
-              .column.is-6.is-offset-3
+        div(class=css.main)
+          div(class=css.container)  
+            div(class=css.columns)
+              div(class=css.column+css.is6+css.isOffset3)
                 block main
 
         if site.github || site.twitter
