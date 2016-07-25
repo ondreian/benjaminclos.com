@@ -9,7 +9,7 @@ block main
     if posts && posts.length
       ol(class=css.posts)
         each post in posts
-          li(class=css.block+css.post)
+          li(class=css.block)
             h1(class=css.title)
               a(href=post.path)!= post.title
             h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
