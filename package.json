@@ -9,8 +9,10 @@
   },
   "scripts": {
     "start": "brunch watch --server",
-    "prod": "brunch build --production",
-    "deploy": "surge ./public"
+    "build:prod": "brunch build --production",
+    "build:dev": "brunch build",
+    "deploy": "surge ./public",
+    "pre:deploy": "npm run build:prod"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
