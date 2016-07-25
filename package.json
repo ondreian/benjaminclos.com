@@ -11,8 +11,7 @@
     "start": "brunch watch --server",
     "build:prod": "brunch build --production",
     "build:dev": "brunch build",
-    "deploy:gh": "git subtree push --prefix public origin gh-pages",
-    "predeploy:gh": "npm run build:prod"
+    "deploy:gh": "git add . && git commit -m 'deployment' && git subtree push --prefix public origin gh-pages"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
