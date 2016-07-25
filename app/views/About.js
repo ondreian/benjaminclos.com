@@ -1,6 +1,6 @@
 import m          from "mithril"
 import App        from "layouts/App"
-import {bulma, pipe, styles}    from "utils/bulma"
+import {bulma, pipe, styles} from "utils/bulma"
 
 import sections   from "config/about"
 
@@ -23,10 +23,10 @@ export default class About {
       | pipe.main( styles.section() )
   }
 
-  static section (section) {
+  static section ({title, text}) {
     return bulma.section(
-        m('h3', section.title)
-      , m('p' , section.text)
+        m('h3', title)
+      , m('p' , text)
     )
   }
   

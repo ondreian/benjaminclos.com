@@ -5,11 +5,12 @@
   "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git@github.com:ondreian/i.am.benjaminclos.com.git"
   },
   "scripts": {
     "start": "brunch watch --server",
-    "prod": "brunch build --production"
+    "prod": "brunch build --production",
+    "deploy": "surge ./public"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
