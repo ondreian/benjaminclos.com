@@ -1,0 +1,36 @@
+<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>revamping the blog | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="revamping the blog"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/revamping-the-blog"/><meta property="og:description" content="how I chose the current stack for my blog and personal website."/><meta name="description" content="how I chose the current stack for my blog and personal website."/><meta property="og:tags" content="meta, javascript, bulma"/></head><body class="blog"><div class="_app_5bt5x_3791 "><div class="_top_5bt5x_3824 _navigation_5bt5x_3824 _detached_5bt5x_3841 "><div class="_container_5bt5x_242 "><div class="_nav_5bt5x_1722 "><div class="_nav-center_5bt5x_2990 "><a class="_nav-item_5bt5x_2922 " href="/">home</a><a class="_nav-item_5bt5x_2922 " href="/blog">blog</a><a class="_nav-item_5bt5x_2922 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_5bt5x_3796 "><div class="_container_5bt5x_242 "> <div class="_columns_5bt5x_1928 "><div class="_column_5bt5x_1925 _is-6_5bt5x_1332 _is-offset-3_5bt5x_1971 "><article class="_container_5bt5x_242 "><header class="_heading_5bt5x_1760 "><h1 class="_title_1p9ra_19 ">revamping the blog</h1><h2></h2><h3 class="_timestamp_1p9ra_25 ">7.25.2016</h3><h3 class="_tldr_1p9ra_29 ">ran into some hiccups, wrote a brunch plugin, feel satisfied for the moment.</h3></header><div class="_content_5bt5x_238 _block_5bt5x_238 "><p>In an attempt to streamline my workflow for blogging, I recently decided to revamp my blog.  The first step for me was to come up with my desired features:</p>
+<ul>
+<li>statically compiled Markdown to HTML</li>
+<li>a tag system</li>
+<li>a draft system</li>
+<li>Disqus support</li>
+<li>interoperability with the Brunch ecosystem</li>
+<li>minimal configuration</li>
+<li>no need to write Javascript to manage anything</li>
+</ul>
+<p>After spending some time looking for an already authored plugin, I came away fruitless. I knew I was going to have to get my hands dirty.  It was not my first rodeo with riding a Brunch plugin, but it had been awhile since I had delved into the core of the ecosystem and I knew that quite a bit had changed.  After an hour or so of hacking away I had a functional plugin already fleshed out, and that is when I came across this gem in the Brunch <a href="http://brunch.io/docs/using-plugins">documentation</a>:</p>
+<p><em>To make your JS component aware of the actual class name, a compiler can allow you to require that css file to get information about its class name mappings, Note: this exmaple is real. CSS modules are supported by several core stylesheet compilers with a configuration option: stylus-brunch, sass-brunch, and css-brunch.</em></p>
+<p>Immediately, I knew this feature was something I wanted to use on both the blog and the SPA.  I almost always use <a href="https://mithril.js.org">Mithril.js</a> for my work when I can, and my personal website is no exception.  With this, I could dynamically generate functions that created my Mithril elements from my CSS framework.  For this website I had already chosen <a href="https://bulma.io">bulma</a>.  This meant I could write my Mithril views like this:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">section</span> (<span class="hljs-params">{title, text}</span>) </span>{
+  <span class="hljs-keyword">return</span> bulma.section(
+      bulma.title(title)
+    , bulma.paragraph(text)
+  )
+}
+</code></pre>
+<p>The next step was getting it working with the static compilation part of the build, as the CSS classes are mangled in this CSS-JS interop, turning <code>.someClass</code> into <code>.someClass_w7jv7_238</code> which means my static content compilation needed to also be aware of the interop, so I could use them in the Pug templates.</p>
+<p>After a bit of head scratching on how to reconcile the two compile paths and some back and forth with fellow developer and friend <a href="https://twitter.com/@jonlim">@jonlim</a> I resolved to add an <code>onCompile</code> hook, which occurs after Brunch compiles, and check the resulting source graph for any source files that were not Javascript, but were being output Javascript by Brunch.  After a bit of playing, I had it working and could now write the templates for my blog while using my sass definitions like so:</p>
+<pre><code class="language-jade">extends ../layout
+
+block main
+  header
+    div(class=css.content)
+      h1(class=css.title) posts
+</code></pre>
+<p>So far, so good, and we will just have to see how it goes for a couple of months.  I went a head and published the plugin to help someone quickly get a static blog up and running called <a href="https://github.com/ondreian/brunch-blog">brunch-blog</a> on NPM, feel free to use it and give me some feedback, report an issue or open a pull-request.</p>
+</div></article><section class="section comments"><div class="content"><div id="disqus_thread"><script>(function() {  // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//benjaminclos.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></section></div></div></div></div><div class="_navigation_5bt5x_3824 _bottom_5bt5x_3887 "><div class="_container_5bt5x_242 "><div class="_nav_5bt5x_1722 "><div class="_nav-center_5bt5x_2990 "><a class="_nav-item_5bt5x_2922 " href="https://github.com/ondreian"><i class="ion-social-github"></i></a><a class="_nav-item_5bt5x_2922 " href="https://twitter.com/benjaminclos"><i class="ion-social-twitter"></i></a></div></div></div></div></div></body></html>

@@ -12,7 +12,7 @@
     "build:prod": "brunch build --production",
     "build:dev": "brunch build",
     "deploy": "surge ./public",
-    "pre:deploy": "npm run build:prod"
+    "predeploy": "npm run build:prod"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
@@ -27,7 +27,7 @@
     "babel-plugin-transform-class-properties": "^6.10.2",
     "babel-preset-es2015": "~6.3.13",
     "brunch": "^2.4.0",
-    "brunch-blog": "^2.0.0",
+    "brunch-blog": "1.1.1",
     "clean-css-brunch": "^2.0.0",
     "css-brunch": "^2.0.0",
     "javascript-brunch": "^2.0.0",
