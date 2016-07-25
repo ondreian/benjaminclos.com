@@ -1,17 +1,19 @@
 extends ../layout
 
 block main
-  article.container.tags
-    header.heading
-      .content
-        h1.title= tag.title
-    section.list
-      .content
-        ol.posts
+  article(class=css.container)
+    
+    header(class=css.heading)
+      div(class=css.content)
+        h1(class=css.title+css.tag)=tag.title
+    
+    section(class=css.index)
+      div(class=css.content)
+        ol(class=css.posts)
           each post in tag.posts
-            li.post
-              .content
+            li(css.post)
+              div(class=css.content)
                 h2
                   a(href='/'+post.path)!= post.title
-                h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
-                h4.excerpt!= post.excerpt
+                h4(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+                h4(class=css.excerpt)!= post.excerpt

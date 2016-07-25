@@ -1,20 +1,20 @@
 extends ../layout
 
 block main
-  section.header
-    .content
-      h1.title tags
+  header
+    div(class=css.content)
+      h1(class=css.title) tags
 
-  section.index  
+  section(class=css.index)
     if tags && tags.length
-      ul
+      ol
         each tag in tags
-          li.block
-            h1
+          li(class=css.block)
+            h2(class=css.title)
               a(href=tag.path)
                 span.count [#{tag.posts.length}] 
                 span.name !{tag.title} 
-              
+                
     else
-      .content
+      div(class=css.content)
         h2 nothing has been tagged yet

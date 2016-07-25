@@ -1,18 +1,18 @@
 extends ../layout
 
 block main
-  section.header
-    .content
-      h1.title posts
+  header
+    div(class=css.content)
+      h1(class=css.title) posts
 
-  section.index  
+  section(class=css.index)
     if posts && posts.length
-      ul.posts
+      ol(class=css.posts)
         each post in posts
-          li.post.block
-            h2.title
+          li(class=css.block+css.post)
+            h1(class=css.title)
               a(href=post.path)!= post.title
-            h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
-            h4.excerpt!= post.excerpt
+            h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+            h3(class=css.excerpt)!= post.excerpt
     else
       h2 nothing has been written yet

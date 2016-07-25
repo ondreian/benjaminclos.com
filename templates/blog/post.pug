@@ -10,6 +10,7 @@ block og
 
   if excerpt
     meta(property="og:description", content=excerpt)
+    meta(name="description", content=excerpt)
   
   if publishDate
     meta(property="og:published_time", content=publishDate.toISOString())
@@ -18,13 +19,14 @@ block og
     meta(property="og:tags", content=tags.join(', '))
 
 block main
-  article.container
-    header.heading.block
-      h1.title=title
-      h3.author=author
-      h4.published-on=helpers.moment(publishDate).format("M.D.YYYY")
+  article(class=css.container)
+    header(class=css.heading)
+      h1(class=css.title)=title
+      h2(class=css.author)=author
+      h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+      h3(class=css.tldr)!=tldr
   
-    .content.block!=contents
+    div(class=css.content+css.block)!=contents
 
   if site.disqus
     section.section.comments
