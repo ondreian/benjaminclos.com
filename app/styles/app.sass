@@ -16,11 +16,12 @@ html
 .app
   display    : flex
   flex-direction: column
+  min-height: 100%
   min-height : 100vh
 
 .main
   //display: flex
-  flex : 1
+  flex: 1 0 auto
   padding-top: 80px
 
 .is-paddingless
@@ -121,6 +122,8 @@ body
 
 .navigation.bottom
   background: #313131
+  padding-top: 10px
+  flex-shrink: 0
 
   .nav-item
     color: #f1f1f1
