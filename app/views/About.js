@@ -23,6 +23,10 @@ export default class About {
       | pipe.main( styles.section() )
   }
 
+  static cipher (text) {
+    return atob(text)
+  }
+
   static section ({title, text}) {
     return bulma.section(
         m('h3', title)

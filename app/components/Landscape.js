@@ -10,6 +10,12 @@ import Euclidean             from "utils/Euclidean"
 
 import Roll                  from "animations/Roll"
 
+import images                from "images"
+
+function randomImage (images) {
+  return `/images/` + images[ Math.floor( Math.random() * images.length ) ]
+}
+
 function double (x) {
   return x * 2
 }
@@ -32,7 +38,7 @@ export default class Landscape {
   static dataset (ctrl) {
     return {
         className         : Lazy.class
-      , "data-background" : "/images/fields.jpg"
+      , "data-background" : randomImage(images)
       , config            : (ele, isInitialized, ctx) => {
           if (isInitialized) {
             return ctrl.animate()
