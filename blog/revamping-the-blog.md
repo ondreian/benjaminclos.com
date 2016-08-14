@@ -2,6 +2,7 @@
 title: Revamping The Blog
 tags: meta, javascript, bulma
 excerpt: how I chose the current stack for my blog and personal website.
+createdAt: 7-21-2016
 tldr: ran into some hiccups, wrote a brunch plugin, feel satisfied for the moment.
 ---
 
