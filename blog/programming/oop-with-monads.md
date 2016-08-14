@@ -19,7 +19,9 @@ When the word `Monad` is used peoples' eyes tend to (rightfully) glaze over like
 *In addition to it being useful, it is also cursed and the curse of the monad is that once you get the epiphany, once you understand - "oh that's what it is" - you lose the ability to explain it to anybody.*
 *- Douglas Crockford*
 
-Let's hope he is wrong.  Monads have a strict mathematical definition, but for the purpose of this knowledge building exercise, we are going to gloss over (most) of that boring nonsense.  If you are very interested in it, you can research Category theory and Algebraic structures
+Let's hope he is wrong.  Monads have a strict mathematical definition, but for the purpose of this knowledge building exercise, we are going to gloss over (most) of that boring nonsense.  If you are very interested in it, you can research [Category theory](https://en.wikipedia.org/wiki/Monad_%28category_theory%29) and [Algebraic structures](https://github.com/fantasyland/fantasy-land).  
+
+*fantasy land spec uses `map` for `fmap`, but I think fmap is less confusing given the history of `map` and `Iterables` in most programming languages*
 
 **warning: reductive thinking ahead** 
 
