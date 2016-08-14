@@ -2,7 +2,7 @@
 title: Better Together - Part 1 - Monad
 tags: javascript, functional, oop
 author: Benjamin Clos
-createdAt: 8-14-2016
+publishDate: 8-14-2016
 excerpt: the first in a series of musings on the pairing of OOP and Functional programming. Beginning with jargon destructuring and building a base Monad.
 ---
 

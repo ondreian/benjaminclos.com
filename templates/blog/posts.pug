@@ -12,7 +12,7 @@ block main
           li(class=css.block)
             h1(class=css.title)
               a(href=post.path)!= post.title
-            h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+            h3(class=css.timestamp)=helpers.moment(post.publishDate, "M.D.YYYY").format("M.D.YYYY")
             h3(class=css.excerpt)!= post.excerpt
     else
       h2 nothing has been written yet

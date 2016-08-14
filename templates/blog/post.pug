@@ -12,7 +12,7 @@ block og
     meta(property="og:description", content=excerpt)
     
   if publishDate
-    meta(property="og:published_time", content=publishDate.toISOString())
+    meta(property="og:published_time", content=(new Date(publishDate)).toISOString())
   
   if tags.length
     meta(property="og:tags", content=tags.join(', '))
@@ -21,7 +21,7 @@ block main
   article(class=css.container)
     header
       h1(class=css.title)=title
-      h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+      h3(class=css.timestamp)=helpers.moment(publishDate, "M.D.YYYY").format("M.D.YYYY")
       h3(class=css.author)=author
       if tags.length
         h3(class=css.tagList)
