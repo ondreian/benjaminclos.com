@@ -23,13 +23,13 @@ Let's hope he is wrong.  Monads have a strict mathematical definition, but for t
 
 **warning: reductive thinking ahead** 
 
-Monads are a way to represent [states](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state) in a way that allows you to account for logical branches, in a similar way to how an `if/else` or `switch` accounts for logical branches.  Where their power lies, is in their composability and reusability.  They lead to terse, understandable logical branching which enables a programmer to more readily understand the state of the current app, and by baking in guards against common pitfalls, allow you to write more fun code and less guard rails.
+Monads are a way to represent [states](https://en.wikipedia.org/wiki/State_(computer_science)#Program_state) in a way that allows you to account for logical branches, in a similar way to how an `if/else` or `switch` accounts for logical branches.  Where their power lies, is in their composability and reusability.  They lead to terse, understandable logical branching which enables a programmer to more readily understand the state of the current expression, and by baking in guards against common pitfalls, allow you to write more fun code and less guard rails.
 
 They are not special, they are just an abstraction about the state of a variable or expression at any given point of execution.
 
-A `Monad` also implements an `fmap` method or `Functor map`.  What this jargon means, is a `Monad` provides a uniform way to transition (`fmap`) from one state (`Monad`) to another state (`Monad`)
+A `Monad` also implements an `fmap` method or `Functor map`.  What this jargon means, is a `Monad` provides a uniform way to transition (`fmap`) from one state (`Monad`) to another state (`Monad`).
 
-This state transition ability (`fmap`) is what gives a `Monad` its powers, it is where a developer can manage side-effects or prempt invalid transitions.
+This state transition ability (`fmap`) is what gives a `Monad` its powers, it is where a developer can manage side-effects or prempt invalid transitions.  It can also be likened to a more generalized `Array.prototype.map`, allowing a developer to `map` an `Array` to another `Array`.
 
 an example of a common type of side-effect you might deal with, the undefined lookup:
 
