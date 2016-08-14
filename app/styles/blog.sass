@@ -1,19 +1,21 @@
 header
-  padding: 40px 0px 30px 0px
+  padding: 40px 0px 10px 0px
+  font-size: 14px
 
   h1
-    font-size: 2.5em
+    font-size: 2.65em
+    padding-bottom: 15px
     color: #131313
     text-transform: uppercase
 
-article
-  font-size: 1.5em
+  h3
+    font-size: 1.25em
+    padding: 10px 0px
+    margin: 0px
 
-  p
-    text-align: justify
-
-  pre
-    margin-bottom: 1em
+.tag-list
+  a
+    margin-right: 10px
 
 .index
   ol
@@ -28,10 +30,6 @@ h1.tag
   &:before
     content: "tag: "
 
-.timestamp
-  margin: 10px 0px
-  font-size: 1.6em
-
 .tldr
   text-transform: none
   text-decoration: italic
@@ -39,4 +37,26 @@ h1.tag
   font-size: 1.4em
 
   &:before
-    content: "tldr;   " 
+    content: "tldr;   "
+
+article
+  padding-bottom: 20px
+
+  .content
+    font-size: 16px
+
+  p
+    text-align: justify
+    line-height: 2em
+    padding: 0em 0em 1.5em 0em
+
+  pre
+    margin-bottom: 1em
+
+  h2
+    font-size: 2em
+    text-transform: uppercase
+    padding: 1.5em 0em 1.5em 0em
+
+  p code
+    font-size: 1em

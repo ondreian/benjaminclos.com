@@ -19,11 +19,17 @@ block og
 
 block main
   article(class=css.container)
-    header(class=css.heading)
+    header
       h1(class=css.title)=title
-      h2(class=css.author)=author
       h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
-      h3(class=css.tldr)!=tldr
+      h3(class=css.author)=author
+      if tags.length
+        h3(class=css.tagList)
+          for tag in tags
+            a(href="/blog/tags/" + tag)=tag 
+
+      if tldr
+        h3(class=css.tldr)!=tldr
   
     div(class=css.content+css.block)!=contents
 

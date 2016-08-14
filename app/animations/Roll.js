@@ -16,8 +16,8 @@ export default class Roll {
 Roll.timing = {
     x       : 100
   , scalar  : .5
-  , initial : 1000
-  , fuzz : 7500
+  , initial : 500
+  , fuzz    : 7500
 }
 
 Roll.timers = {
