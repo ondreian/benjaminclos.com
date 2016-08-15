@@ -2,21 +2,21 @@
 title: OO + Functional - Part 2 - Either ||
 tags: javascript, functional, oop
 draft: true
-excerpt: a the first in a series of musings on augmenting object-oriented javascript with functional techniques
+excerpt: Functional + OOP = Winning; the third in a series of musings, focusing on the Either monad.
 ---
 
 ## Either ||
 
-While useful for a lot of situations, that are still many times where we may wish to recover from an `empty` value.  In the context of Javascript `empty` can probably be generalized to both `null` and `undefined`.  Some people feel that `[]` and `{}` are also empty, but since we are talking about a `Monad` I would disagree.  To assist with this we will create our `Either` implementation.
+While useful for a lot of situations, that are still many times where we may wish to recover from an `Nothing` value.  In the context of Javascript `Nothing` can probably be generalized to both `null` and `undefined`.  To assist with this we will create our `Either` implementation.
 
 ```javascript
 
 const
-  Monad = require("./Monad")
+  Maybe = require("./Maybe")
 
-module.exports = class Either extends Monad {
+module.exports = class Either extends Maybe {
   // explicit Either creation for flat `fmap`
-  static of (val) {
+  static Either (val) {
     return new Either(val)
   }
   // curried Either creation
@@ -26,35 +26,57 @@ module.exports = class Either extends Monad {
   static or (fallback) {
     return val => Either.of(val).or(fallback)
   }
-
-  static Either (a, b) {
-    return Either.isMonad(a)
-      ? a.fmap(Either.of).or(b)
-      : Either.of(a).or(b)
-  }
-
+  // so we can chain our fallback value
   or (fallback) {
-    return this.of( this.of(this).isEmpty ? fallback : this )
+    return this.of( this.of(this).isNothing ? fallback : this )
   }
 }
+```
 
-// Example
-const people = [{ name : "fred"}, undefined, {name : "mary"}]
-  .map(Either.or({}))
+Well that was not very much code, but let's illustrate a few examples to give you an idea of how powerful this is:
 
-console.log(Either.of(1).or(0))    // Either<1>
-console.log(Either.of(null).or(0)) // Either<0>
-console.log(people)
+```javascript
+const
+    Either      = require("../monads/Either")
+  , fred        = { name : "fred" }
+  , george      = { name : "george" }
+  , orAnonymous = Either.or({ name : "anonymous" })
+
+console.log(Either.of(undefined).or(fred)) // Either<{ name: 'fred' }>
+
+console.log(Either.of(george).or(fred)) // Either<{ name: 'george' }>
+
+const connections = [ fred, george, null, undefined ].map(orAnonymous)
+
+console.log(connections)
 /*
-[ 
-    Either<{ name: 'fred' }>
-  , Either<{}>
-  , Either<{ name: 'mary' }> 
-]
+[ Either<{ name: 'fred' }>,
+  Either<{ name: 'george' }>,
+  Either<{ name: 'anonymous' }>,
+  Either<{ name: 'anonymous' }> ]
 */
 
 ```
 
-As you can see this allows you to gracefully handle `empties`, but I am sure you are asking, what can we do with this we could not do with `Maybe`?
+As you can see this allows you to gracefully handle `Nothing`, but I am sure you could be asking, what is the big difference between `Either` and `Maybe`?
 
-Next we will discuss how to compose our `Maybe` and `Either` to create a Javascript relevant version of a [`Lens`](https://www21.in.tum.de/teaching/fp/SS15/papers/17.pdf) to safely get and set properties anywhere on an `Object`.
+The answer is: `Either` fallbacks to a default value when an `Nothing` is encountered, whereas `Maybe` does not run the transition to the next state when a `Nothing` is encountered.
+
+Let's see how this difference might look in a more tradition `if/else` approach:
+
+```javascript
+
+// Maybe
+function maybeish (thing) {
+  thing && // do something to thing
+}
+
+// Either
+
+function eitherish (thing) {
+  thing = thing || "fallback value"
+  // do something with thing
+}
+```
+
+As you may have noticed it is still a little awkward to handle deeply nested properties, but next we will illustrate how to compose our `Maybe` and `Either` to create a Javascript relevant version of a [`Lens`](https://www21.in.tum.de/teaching/fp/SS15/papers/17.pdf) to safely get and set arbitrarily deep properies on an `Object`.

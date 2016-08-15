@@ -134,7 +134,7 @@ Now let's see what our new `Monad` can do:
 
 ```javascript
 
-const inc  = x = x + 1
+const inc  = x => x + 1
 const zero = Monad.of(0)
 console.log(zero)      // Monad<0>
 console.log(zero())    // 0
