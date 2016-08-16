@@ -15,4 +15,6 @@ const streetAddress = Lens.of("address", "street")
 
 account(streetAddress) // null
 
+streetAddress.put(account, "lazy lane")
+
 ```
