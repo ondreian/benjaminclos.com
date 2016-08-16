@@ -5,4 +5,14 @@ draft: true
 excerpt: The fourth part in my series on Monads in Javascript; combining Maybe and Either to create a Lens
 ---
 
-The `Lens` allows one to safely access and set arbitarily deep properties on an `Object`
+The `Lens` allows one to safely access and set arbitarily deep properties on an `Object`, like this:
+
+```javascript
+
+const account = Maybe.of({})
+
+const streetAddress = Lens.of("address", "street")
+
+account(streetAddress) // null
+
+```
