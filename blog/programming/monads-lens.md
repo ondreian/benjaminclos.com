@@ -21,4 +21,4 @@ console.log(account) // Maybe<{ address: { street: "lazy lane" } }>
 
 ```
 
-Well that was cool, we could safely put a deep property on an `Object` with almost no boilerplate `if/else` logic.
+
