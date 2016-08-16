@@ -20,5 +20,3 @@ streetAddress.put(account, "lazy lane")
 console.log(account) // Maybe<{ address: { street: "lazy lane" } }>
 
 ```
-
-
