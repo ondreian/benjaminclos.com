@@ -1,0 +1,142 @@
+@import "bulma"
+
+$font-main   : 'Amiri', serif
+$font-accent : 'Playfair Display', serif
+$top-nav-height : 60px
+
+a
+  &:focus
+    outline : none
+    border  : none
+
+html
+  background : #fff
+  overflow-y : auto
+
+.app
+  display    : flex
+  flex-direction: column
+  min-height: 100%
+  min-height : 100vh
+
+.main
+  //display: flex
+  flex: 1 0 auto
+  padding-top: 80px
+
+.is-paddingless
+  padding: 0
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6
+  font-family: $font-accent
+  //text-align: center
+
+body
+  font-family: $font-main
+
+.header
+  padding-bottom: 40px
+
+.nav
+  justify-content: center
+  background: none
+
+.nav-item
+  margin : inherit 10px
+
+.navigation.top
+  text-transform: uppercase
+  color: #fff
+  position: fixed
+  top: 0px
+  left: 0px
+  z-index: 100
+  width: 100%
+
+  .nav-item
+    color: #f1f1f1
+    font-size: 1.25em
+    text-transform: uppercase
+    margin: 15px 15px
+    padding: 15px 20px
+
+    &:before
+      content: "/"
+      padding-right: 5px
+
+  &.detached
+    background: #fff
+
+    .nav-item
+      color: #131313
+
+.landscape
+  background: #313131 no-repeat center center fixed
+  background-size: cover
+  display    : flex
+  flex : 1
+  flex-direction: row
+  min-height : 100vh
+
+  .landscape-column
+    display: flex
+    align-items: stretch
+    flex-direction: column
+    flex: 1
+  
+    .landscape-tile
+      background: none no-repeat center center fixed
+      background-color: #313131
+      display: flex
+      flex: 1
+      transition: opacity 0.3s
+      &.pale
+        opacity: .65
+      &.pixel
+        background: lighten(#313131, 10)
+
+  .headline
+    text-align: center
+    background: none
+    z-index: 1
+    position: absolute
+    top: 40%
+    width: 100%
+    font-size: 1.75em
+    color: #f1f1f1
+    opacity: .85
+    text-transform: uppercase
+    letter-spacing: .45em
+    margin-top: -1em
+    text-align: center
+    h1
+      font-size: 1.75em
+    h2
+      font-size: .75em
+        
+
+.navigation.bottom
+  //background: #f3f3f3
+  //border-top: 2px solid #f0f0f0
+  padding-top: 10px
+  padding-bottom: 10px
+  flex-shrink: 0
+
+  .nav-item
+    color: #131313
+    font-size: 30px
+    padding: 28px 40px
+
+
+.about
+  h3
+    font-size: 2.5em
+
+  p
+    font-size: 1.2em
+    text-align: justify

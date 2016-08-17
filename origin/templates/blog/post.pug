@@ -1,0 +1,49 @@
+extends ../layout
+
+block og
+  meta(property="og:title", content=title)
+  meta(property="og:type", content="article")
+  meta(property="og:url", content=permalink)
+
+  if author || site.author
+    meta(property="og:author", content=author || site.author)
+
+  if excerpt
+    meta(property="og:description", content=excerpt)
+    
+  if publishDate
+    meta(property="og:published_time", content=(new Date(publishDate)).toISOString())
+  
+  if tags.length
+    meta(property="og:tags", content=tags.join(', '))
+
+block main
+  article(class=css.container)
+    header
+      h1(class=css.title)=title
+      h3(class=css.timestamp)=helpers.moment(publishDate, "M.D.YYYY").format("M.D.YYYY")
+      h3(class=css.author)=author
+      if tags.length
+        h3(class=css.tagList)
+          for tag in tags
+            a(href=tag.path)=tag.title
+
+      if tldr
+        h3(class=css.tldr)!=tldr
+  
+    div(class=css.content+css.block)!=contents
+
+  if site.disqus
+    section.section.comments
+      .content
+        #disqus_thread
+          script.
+            (function() {  // DON'T EDIT BELOW THIS LINE
+            var d = document, s = d.createElement('script');
+            s.src = '//#{site.disqus}.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+            })();
+          noscript
+            | Please enable JavaScript to view the 
+            a(href='https://disqus.com/?ref_noscript', rel='nofollow') comments powered by Disqus.

@@ -1,0 +1,75 @@
+==================================================================
+https://keybase.io/ondreian
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of http://i.am.benjaminclos.com
+  * I am ondreian (https://keybase.io/ondreian) on keybase.
+  * I have a public key with fingerprint 824E 0153 B141 1918 B630  682C 5F15 C9BF B60E AEEA
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101526f83a9bbf4a0709896f0bddcabf6a55d342c801e45abc1eddf3b9fc53dfc550a",
+            "fingerprint": "824e0153b1411918b630682c5f15c9bfb60eaeea",
+            "host": "keybase.io",
+            "key_id": "5f15c9bfb60eaeea",
+            "kid": "0101526f83a9bbf4a0709896f0bddcabf6a55d342c801e45abc1eddf3b9fc53dfc550a",
+            "uid": "442f088199fc161784ff5d33cdf83c19",
+            "username": "ondreian"
+        },
+        "revoke": {
+            "sig_ids": [
+                "cd6a99fece342cc4d1e4e05cd22007792ae1dca876fc2f9bec69c0bf8e4773390f"
+            ]
+        },
+        "service": {
+            "hostname": "i.am.benjaminclos.com",
+            "protocol": "http:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1469533294,
+    "expire_in": 157680000,
+    "prev": "21bb5a25d332b97155de87817dd1d729f957e53dfe19585cfb0e977e45e5bb2d",
+    "seqno": 25,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.53
+Comment: https://keybase.io/crypto
+
+yMJzAnicrZJtiBVVHMbv9rbexV0XlFJwiz1+MOOynTMzZ86cSxBoLEIhmaZY6e28
+/M863r0zd2dm127L0isppQRaCi0RvtRSkGCsLuiC25KmJIIZJChIgYis+ALWSll0
+ZrFvfWw+zHBmnuf3f+Y557vW+wstTa+jeQu+udh+uemHb+/2F9bufi4aRDLWDVQe
+RFWYeUCvhjSrVEONyggTTKjjm8AVXErjCcwwD7hvsNRaCWl8Qal2PUcFmIBHhVQE
+tDau5EZRV9sbxQKVkAmjHkjqSRhlFhs4HliwK4lHCCeB9F3sB46ihlDFpZE+BgGQ
+GzfGae6w4aRIoSuM7Tu7qMzE+w/9/5y7fwbneY7BQUC4/Up8wgLPGGt3lbYTFOG5
+MIUkEjWw6jjSCYQiQkMllMBAXIW81zTssaFTVH4ZKe0LiwIFeQLlaRsBMFXacTBm
+jDsCiE0ZMN8ox3AJyucKSxOAx5jrcmzQesu2EwdCNQPPW7o3PewStS4J0SZRCyPV
+G6ddKq7ZgPUkzmIV91rJxiyrl/N0WaOeWzaDrNyDVWQYabtX1jAASRrGESoTq1RZ
+mNOJ53Pqug73Sgheq4cJVMJcQZkfYHvlY2DAIh0iJRVOXpIjOSO2bQhYQJjWRDOH
+G04Z5EUD4TSgykgMnDG7FUCldDTKf68vilHZoTan6LFM22Aksv4E0NDkxCsPFJpa
+Cg89eF9+iAstxfZ/j/aXrzb/vXj/hr2Py4lNbevm3Zn6PvuscSv94lL3M4tms1/u
+fjg2q3PzqoXVH5eeHXl06/JqOl64NfTenn4x/FTz9Pi+T/CW2tUDHejASXO93fy6
+ppf+NrJnTgdfsca89U538+4Fg4v2fvzp4AVvcufXw1t3PfnSwalZL5hVkx1j7/65
+bvWzS4+WJv5IPx+ZXvFB+HZxbnp+enz492s/nbq+a+1O9kjfji1Ptx45s/jFK53F
+sRPzW/5qPVeDoG/JjmOHRtdvn/7qo9Fw4fulk+zN+TeLy6LGw0Hb7PNzVh88sr35
+xrFLjSfeuLj8aFtx7mTnttbTl7fdGYnOjD628nj3VN+FQ8vg8Jj788rnz91esv9U
+2z/oFGAF
+=Btxk
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/ondreian
+
+==================================================================

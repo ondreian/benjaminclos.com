@@ -1,0 +1,15 @@
+extends ../layout
+
+block main    
+  header
+    div(class=css.content)
+      h1(class=css.title+css.tag)=tag.title
+  
+  section(class=css.index)
+    ol(class=css.posts)
+      each post in tag.posts
+        li(class=css.block)
+          h1(class=css.title)
+            a(href=post.path)!= post.title
+          h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")
+          h3(class=css.excerpt)!= post.excerpt
