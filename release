@@ -1,5 +1,5 @@
 #!/bin/bash
-#npm run build:prod
+npm run build:prod
 git add .
 git commit -m "release $(date)"
-git push origin gh-pages
+npm run deploy:gh
