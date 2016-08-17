@@ -1,4 +1,5 @@
 #!/bin/bash
+npm run build:prod
 git add .
 git commit -m "release $(date)"
 npm run deploy:gh
