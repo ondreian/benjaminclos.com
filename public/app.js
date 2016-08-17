@@ -600,7 +600,7 @@ module.exports = {"block":"_block_kqw8u_238","box":"_box_kqw8u_238","content":"_
 });
 
 require.register("styles/blog.sass", function(exports, require, module) {
-module.exports = {"tag-list":"_tag-list_zgtne_14","index":"_index_zgtne_17","title":"_title_zgtne_21","tag":"_tag_zgtne_14","tldr":"_tldr_zgtne_27","content":"_content_zgtne_37"};
+module.exports = {"tag-list":"_tag-list_1hkab_14","index":"_index_1hkab_17","title":"_title_1hkab_21","tag":"_tag_1hkab_14","tldr":"_tldr_1hkab_27","content":"_content_1hkab_37"};
 });
 
 require.register("utils/Coin.js", function(exports, require, module) {

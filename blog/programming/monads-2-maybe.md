@@ -52,7 +52,10 @@ module.exports = class Maybe extends Monad {
   }
   // as long as this is empty it's a NOOP
   fmap (fn) {
-    return new this.constructor( this.isNothing ? this : fn(this()) )
+    return new this.constructor( this.isNothing 
+      ? this 
+      : fn(this()) 
+    )
   }
 
   // don't tell the Functionalist zealots I did this

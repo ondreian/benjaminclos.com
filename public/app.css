@@ -3926,30 +3926,30 @@ header {
     padding: 10px 0px;
     margin: 0px; }
 
-._tag-list_zgtne_14 a {
+._tag-list_1hkab_14 a {
   margin-right: 10px; }
 
-._index_zgtne_17 ol {
+._index_1hkab_17 ol {
   list-style-type: none;
   padding: 0px;
   margin: 0px; }
-  ._index_zgtne_17 ol ._title_zgtne_21 {
+  ._index_1hkab_17 ol ._title_1hkab_21 {
     font-size: 1.3em; }
 
-h1._tag_zgtne_14:before {
+h1._tag_1hkab_14:before {
   content: "tag: "; }
 
-._tldr_zgtne_27 {
+._tldr_1hkab_27 {
   text-transform: none;
   text-decoration: italic;
   padding: 15px 0px;
   font-size: 1.4em; }
-  ._tldr_zgtne_27:before {
+  ._tldr_1hkab_27:before {
     content: "tldr;   "; }
 
 article {
   padding-bottom: 20px; }
-  article ._content_zgtne_37 {
+  article ._content_1hkab_37 {
     font-size: 20px; }
   article p {
     text-align: justify;
@@ -3958,7 +3958,7 @@ article {
   article pre {
     margin-bottom: 1em; }
     article pre code {
-      font-size: 1em; }
+      font-size: 0.9em; }
   article h2 {
     font-size: 2em;
     text-transform: uppercase;
