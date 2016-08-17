@@ -1,6 +1,6 @@
 ---
 title: OO + Functional - Part 4 - The Lens
-tags: javascript, functional, oop
+tags: javascript, functional, oop, series:monads
 draft: true
 excerpt: The fourth part in my series on Monads in Javascript; combining Maybe and Either to create a Lens
 ---

@@ -1,6 +1,6 @@
 ---
-title: OO + Functional - Part 2 - Either ||
-tags: javascript, functional, oop
+title: OO + Functional - Part 3 - Either ||
+tags: javascript, functional, oop, series:monads
 draft: true
 excerpt: Functional + OOP = Winning; the third in a series of musings, focusing on the Either monad.
 ---
