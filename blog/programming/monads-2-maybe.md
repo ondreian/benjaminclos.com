@@ -18,11 +18,11 @@ Let's take a classic example of a nonuniform state transition where we may run i
 
 ```javascript
 
-Users.find(fakeId).then( user => {
+User.find(fakeId).then( user => {
   user.name // throws
 })
 
-Users.find(realId).then( user => {
+User.find(realId).then( user => {
   user.name // is fine!
 })
 
