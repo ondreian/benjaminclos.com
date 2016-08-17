@@ -26,7 +26,7 @@ block main
       if tags.length
         h3(class=css.tagList)
           for tag in tags
-            a(href="/blog/tags/" + tag)=tag 
+            a(href=tag.path)=tag.title
 
       if tldr
         h3(class=css.tldr)!=tldr
