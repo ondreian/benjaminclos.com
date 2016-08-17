@@ -1,0 +1,124 @@
+<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>Better Together - Part 1 - Monad | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="Better Together - Part 1 - Monad"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/better-together-part-1-monad"/><meta property="og:author" content="Benjamin Clos"/><meta property="og:description" content="the first in a series of musings on the pairing of OOP and Functional programming. Beginning with jargon destructuring and building a base Monad."/><meta property="og:published_time" content="2016-08-14T04:00:00.000Z"/><meta property="og:tags" content="[object Object], [object Object], [object Object], [object Object]"/></head><body class="blog"><div class="_app_kqw8u_3804 "><div class="_top_kqw8u_3838 _navigation_kqw8u_3838 _detached_kqw8u_3855 "><div class="_container_kqw8u_242 "><div class="_nav_kqw8u_1722 "><div class="_nav-center_kqw8u_2997 "><a class="_nav-item_kqw8u_2925 " href="/">home</a><a class="_nav-item_kqw8u_2925 " href="/blog">blog</a><a class="_nav-item_kqw8u_2925 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_kqw8u_3810 "><div class="_container_kqw8u_242 "> <div class="_columns_kqw8u_1930 "><div class="_column_kqw8u_1925 _is-8_kqw8u_1995 _is-offset-2_kqw8u_1968 "><article class="_container_kqw8u_242 "><header><h1 class="_title_1hkab_21 ">Better Together - Part 1 - Monad</h1><h3>8.14.2016</h3><h3>Benjamin Clos</h3><h3 class="_tag-list_1hkab_14 "><a href="/blog/tags/javascript">javascript</a><a href="/blog/tags/functional">functional</a><a href="/blog/tags/oop">oop</a><a href="/blog/tags/series-monads">series:monads</a></h3></header><div class="_content_1hkab_37 _block_kqw8u_238 "><p>Often times people talk about functional programming and object-oriented programming as though they were at odds.  However, they can work together with great efficacy, especially in the case of Javascript and even more so with the ability to inherit from Primitives in ES6.</p>
+<p>As a preface, when talking about <code>Promise</code> in this article I am referring to the <a href="http://bluebirdjs.com/">bluebird</a> module, which has many benefits over native the native <code>Promise</code> implementation.</p>
+<h2>Glazed Donuts</h2>
+<p>When the word <code>Monad</code> is used peoples' eyes tend to (rightfully) glaze over like a dozen of the finest donuts from your local bakery at around 4 in the morning.  Before reading a few well written and less arcane blog posts on the topic, I was the same way.  <strong>Fight the urge!</strong>  They are worth <a href="https://en.wikipedia.org/wiki/Grok">groking</a>.</p>
+<h2>What is a Monad?</h2>
+<p><em>In addition to it being useful, it is also cursed and the curse of the monad is that once you get the epiphany, once you understand - &quot;oh that's what it is&quot; - you lose the ability to explain it to anybody.</em>
+<em>- Douglas Crockford</em></p>
+<p>Let's hope he is wrong.  Monads have a strict mathematical definition, but for the purpose of this knowledge building exercise, we are going to gloss over (most) of that boring nonsense.  If you are very interested in it, you can research <a href="https://en.wikipedia.org/wiki/Monad_%28category_theory%29">Category theory</a> and <a href="https://github.com/fantasyland/fantasy-land">Algebraic structures</a>.</p>
+<p><em>fantasy land spec uses <code>map</code> for <code>fmap</code>, but I think fmap is less confusing given the history of <code>map</code> and <code>Iterables</code> in most programming languages</em></p>
+<p><strong>warning: reductive thinking ahead</strong></p>
+<p>Monads are a way to represent <a href="https://en.wikipedia.org/wiki/State_(computer_science)#Program_state">states</a> in a way that allows you to account for logical branches, in a similar way to how an <code>if/else</code> or <code>switch</code> accounts for logical branches.  Where their power lies, is in their composability and reusability.  They lead to terse, understandable logical branching which enables a programmer to more readily understand the state of the current expression, and by baking in guards against common pitfalls, allow you to write more fun code and less guard rails.</p>
+<p>They are not special, they are just an abstraction about the state of a variable or expression at any given point of execution.</p>
+<p>A <code>Monad</code> also implements an <code>fmap</code> method or <code>Functor map</code>.  What this jargon means, is a <code>Monad</code> provides a uniform way to transition (<code>fmap</code>) from one state (<code>Monad</code>) to another state (<code>Monad</code>).</p>
+<p>This state transition ability (<code>fmap</code>) is what gives a <code>Monad</code> its powers, it is where a developer can manage side-effects or prempt invalid transitions.  It can also be likened to a more generalized <code>Array.prototype.map</code>, allowing a developer to <code>map</code> an <code>Array</code> to another <code>Array</code>.</p>
+<p>an example of a common type of side-effect you might deal with, the undefined lookup:</p>
+<pre><code class="hljs"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getFullName</span> (<span class="hljs-params">user</span>) </span>{
+  <span class="hljs-keyword">if</span> (!user)      <span class="hljs-keyword">return</span> <span class="hljs-string">""</span>
+  <span class="hljs-keyword">if</span> (!user.name) <span class="hljs-keyword">return</span> <span class="hljs-string">""</span>
+  <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${user.name.first}</span> <span class="hljs-subst">${user.name.second}</span>`</span>
+}
+</code></pre>
+<p>Here you are checking to be sure you do not get the dreaded <code>TypeError: Cannot read property 'property' of undefined</code>.  This is precisely the type of side-effect a <code>Monad</code> can help you manage.</p>
+<h2>The Base Monad</h2>
+<p>Let's take a look at how to implement a base <code>Monad</code> that has the traits we want.  Sometimes this is called the <code>Context</code> monad, but since we are going to use it as our base class to inherit from, we will simply call it <code>Monad</code>.</p>
+<p><em>note</em>: This example uses ES6 on a modern Javascript engine, that allows inheritance from Native objects.</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span>
+  util     = <span class="hljs-built_in">require</span>(<span class="hljs-string">"util"</span>)
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monad</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Function</span> </span>{
+  <span class="hljs-comment">// implicit creation using `this` allows for</span>
+  <span class="hljs-comment">// elegant subclass creation</span>
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">of</span> () {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">this</span>(...arguments)
+  }
+  <span class="hljs-comment">// in case we ever want an easy way to see if an object</span>
+  <span class="hljs-comment">// is a Monad</span>
+  <span class="hljs-keyword">static</span> isMonad (thing) {
+    <span class="hljs-keyword">return</span> thing <span class="hljs-keyword">instanceof</span> Monad
+  }
+  <span class="hljs-comment">// this explicit creator is very different than `Monad.of`</span>
+  <span class="hljs-comment">// it allows us to access a base Monad instance from anywhere</span>
+  <span class="hljs-comment">// on our prototype inheritance</span>
+  <span class="hljs-keyword">static</span> Monad () {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Monad(...arguments)
+  }
+  <span class="hljs-comment">// returns a Monad that we can call like any other Function</span>
+  <span class="hljs-comment">// const monad = Monad.of(1)</span>
+  <span class="hljs-comment">// monad() // 1</span>
+  <span class="hljs-keyword">constructor</span> (value) {
+    <span class="hljs-keyword">super</span>()
+
+    <span class="hljs-keyword">return</span> Monad.isMonad(value)
+      ? value <span class="hljs-comment">// don't need to nest Monads</span>
+      : <span class="hljs-built_in">Object</span>.setPrototypeOf( 
+            fn =&gt; !fn ? value : <span class="hljs-keyword">this</span>.constructor.of(value).fmap(fn)
+          , <span class="hljs-keyword">new</span>.target.prototype
+        )
+  }
+  <span class="hljs-comment">// this is our fmap function, which a Monad may use to transition</span>
+  <span class="hljs-comment">// from one value or state to another</span>
+  <span class="hljs-comment">// it returns a new Monad of the transitioned value</span>
+  fmap (fn) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.constructor.of(fn(<span class="hljs-keyword">this</span>()))
+  }
+  <span class="hljs-comment">// allows us to compose a set of functions </span>
+  <span class="hljs-comment">// a bunch of `fmap`s</span>
+  <span class="hljs-comment">// monad.compose(op1, op2, op3)</span>
+  compose (...fns) {
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.prototype.concat.apply([], fns)
+      .reduce( (monad, fn) =&gt; monad(fn), <span class="hljs-keyword">this</span>)
+  }
+  <span class="hljs-comment">// remember, mum is the word!</span>
+  get isMonad () {
+    <span class="hljs-keyword">return</span> Monad.isMonad(<span class="hljs-keyword">this</span>)
+  }
+  <span class="hljs-comment">// adding an inspect method makes our Monad play nicely with `console.log`</span>
+  <span class="hljs-comment">// always treat debugging like a first-class citizen!</span>
+  inspect () {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${this.constructor.name}</span>&lt;`</span> + util.inspect(<span class="hljs-keyword">this</span>()) + <span class="hljs-string">`&gt;`</span>
+  }
+}
+</code></pre>
+<p>While we have broken a couple of cardinal functional rules here by adding class properties to our Monad, we have ultimately made it much easier to utilize.  We've also given ourself a solid building block from which we can extend a variety of types of Monads.  However, one key feature we should add is the ability for Promises to &quot;absorb&quot; our Monads.</p>
+<pre><code class="hljs">
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monad</span> </span>{
+  <span class="hljs-comment">//... rest of our methods</span>
+  then (resolve, reject) {
+    <span class="hljs-comment">// fmap is an unary function for our base monad</span>
+    <span class="hljs-comment">// but down the road it may be binary</span>
+    <span class="hljs-comment">// and we do not want to limit our inheritance</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.fmap(resolve, reject)
+  }
+}
+
+</code></pre>
+<p>By adding this ability, we have given our Monads a lot of power to play nicely with traditional asynchronous flow handlers in Javascript.</p>
+<p>When you are writing Javascript, please consider its context within the ecosystem.  Allowing it to cleanly integrate with other common patterns and libraries reduces cognitive overhead, and make your code more likely to be lasting and maintainable.</p>
+<p>Now let's see what our new <code>Monad</code> can do:</p>
+<pre><code class="hljs">
+<span class="hljs-keyword">const</span> inc  = x =&gt; x + <span class="hljs-number">1</span>
+<span class="hljs-keyword">const</span> zero = Monad.of(<span class="hljs-number">0</span>)
+<span class="hljs-built_in">console</span>.log(zero)      <span class="hljs-comment">// Monad&lt;0&gt;</span>
+<span class="hljs-built_in">console</span>.log(zero())    <span class="hljs-comment">// 0</span>
+<span class="hljs-built_in">console</span>.log(zero(inc)) <span class="hljs-comment">// Monad&lt;1&gt;</span>
+<span class="hljs-comment">// Wheee we can use it with Promises to transition between states</span>
+<span class="hljs-built_in">Promise</span>.resolve(zero).then(<span class="hljs-built_in">console</span>.log) <span class="hljs-comment">// 0</span>
+<span class="hljs-comment">// what if we get a Promise from some external service?</span>
+<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-number">0</span>).then(Monad.Monad).then(<span class="hljs-built_in">console</span>.log) <span class="hljs-comment">// 0</span>
+<span class="hljs-comment">// we can just pipe it into our explicity Monad creator</span>
+</code></pre>
+<p>One common problem is: how do I get my value out of the Monad?</p>
+<p>I think a better question to ask yourself might be: do I need to get it out or can I just transition (<code>fmap</code>) it to a different state?</p>
+<p>Well that might seem underwhelming; it admittedly does not do much by itself, but it is going to be an important building block for part 2, when we introduce the <code>Maybe</code> monad and how to begin to deal with undefined lookup errors.</p>
+</div></article><section class="section comments"><div class="content"><div id="disqus_thread"><script>(function() {  // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//benjaminclos.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></section></div></div></div></div><div class="_navigation_kqw8u_3838 _bottom_kqw8u_3901 "><div class="_container_kqw8u_242 "><div class="_nav_kqw8u_1722 "><div class="_nav-center_kqw8u_2997 "><a class="_nav-item_kqw8u_2925 " href="https://github.com/ondreian"><i class="ion-social-github"></i></a><a class="_nav-item_kqw8u_2925 " href="https://twitter.com/benjaminclos"><i class="ion-social-twitter"></i></a></div></div></div></div></div><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-82549801-1', 'auto');
+ga('send', 'pageview');</script></body></html>

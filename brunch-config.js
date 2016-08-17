@@ -2,7 +2,7 @@ module.exports = {
   paths: {
     public: "docs"
   }
-  files: {
+  , files: {
     javascripts: {
       joinTo: {
           'vendor.js': /^(?!app)/
