@@ -1,5 +1,4 @@
 #!/bin/bash
-#npm run build:prod
 git add .
 git commit -m "release $(date)"
-git subtree push --prefix public origin gh-pages
+git subtree push --split --prefix public origin gh-pages
