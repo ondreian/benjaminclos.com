@@ -1,4 +1,0 @@
-#!/bin/bash
-git add .
-git commit -m "release $(date)"
-git subtree push --split --prefix public origin gh-pages
