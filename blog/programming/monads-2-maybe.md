@@ -28,7 +28,7 @@ Users.find(realId).then( user => {
 
 ```
 
-![lol javascript](http://imgs.xkcd.com/comics/schrodinger.jpg)
+![xkcd shrodinger](http://imgs.xkcd.com/comics/schrodinger.jpg)
 
 We don't actually know if user is `Nothing` until we look, and this can cause all sorts of problems for Javascript developers, experienced and beginners alike.  The wise among you will note that you can use `Promise.prototype.catch` to handle such an error, but the added noise that this can incur in your `catch` handler generally distracts from the clarity of handling actual operational errors, like recovering from a network partition, an unreachable database, or a filesystem error via properly scoped [`Error`](http://bluebirdjs.com/docs/api/catch.html#filtered-catch) objects.
 
@@ -36,7 +36,7 @@ It would be more meaningful to simply short-circuit this type of operation most 
 
 ## Call Me Maybe?
 
-Let's extend our base `Maybe` to create our `Maybe` monad to help with this problem.
+We can create the `Maybe` monad by extending our previously explained `Monad`to help with this problem.
 
 
 ```javascript
