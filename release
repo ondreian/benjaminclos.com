@@ -1,4 +1,4 @@
 #!/bin/bash
-git add .
+git add ./docs
 git commit -m "release $(date)"
-git subtree push --prefix=public origin gh-pages
+git push origin master
