@@ -2,14 +2,18 @@ extends ../layout
 
 block og
   meta(property="og:title", content=title)
+  meta(property="twitter:title", content=title)
   meta(property="og:type", content="article")
   meta(property="og:url", content=permalink)
-
+  meta(property="twitter:card", content="summary")
+  meta(property="twitter:site", content=site.twitter)
+  
   if author || site.author
     meta(property="og:author", content=author || site.author)
 
   if excerpt
     meta(property="og:description", content=excerpt)
+    meta(property="twitter:description", content=excerpt)
     
   if publishDate
     meta(property="og:published_time", content=(new Date(publishDate)).toISOString())

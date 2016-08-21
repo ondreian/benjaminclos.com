@@ -1,13 +1,13 @@
 ---
 title: OO + Functional - Part 3 - Either ||
 tags: javascript, functional, oop, series:monads
-draft: true
-excerpt: Functional + OOP = Winning; the third in a series of musings, focusing on the Either monad.
+publishDate: 8-21-2016
+excerpt: The third in a series of musings on pairing OOP with functional paradigms; recovering from empty values with the Either monad.
 ---
 
-## Either ||
+In the [last segment](/blog/oo-functional-part-2-call-me-maybe/) we extended our `Monad` to create `Maybe` which allowed us to shortcircuit `Nothing` operations.  Today we are going to continue with this extending our logical branching by creating the `Either` monad.  The `Either` allows us to recover or transition (`fmap`) from `Nothing` to our default value.
 
-While useful for a lot of situations, that are still many times where we may wish to recover from an `Nothing` value.  In the context of Javascript `Nothing` can probably be generalized to both `null` and `undefined`.  To assist with this we will create our `Either` implementation.
+Let's work on our `Either` implementation:
 
 ```javascript
 
@@ -20,63 +20,110 @@ module.exports = class Either extends Maybe {
     return new Either(val)
   }
   // curried Either creation
-  // example :
-  // const numeric = Either.or(0)
-  // [1,2,3,undefined, null].map(numeric)
   static or (fallback) {
     return val => Either.of(val).or(fallback)
   }
   // so we can chain our fallback value
   or (fallback) {
-    return this.of( this.of(this).isNothing ? fallback : this )
+    return this.of( this.isNothing ? fallback : this )
   }
 }
 ```
 
-Well that was not very much code, but let's illustrate a few examples to give you an idea of how powerful this is:
+Well that was not very much code, but it will be yet another powerful building block. We have also introduced a new concept with the static `or` method, where we are [partially applying](https://en.wikipedia.org/wiki/Partial_application) the creation of our `Either` with a higher-order function.
+
+***Higher-order Functions:***
+*Functions that both accept functions as arguments and return functions as results.*
+
+***Partial Application:***
+*Translating a function that is executed with a set of arguments and into a series of functions each accepting one or more of the arguments until the set is full, where the function then executes with the completed set of arguments.*
+
+***Currying:***
+*Translating a function that is executed with a set of arguments into a series of ***unary*** functions, or functions that only accept 1 argument.*
+
+Because we know that our Either branch is a binary logic chain, that is to say it can only have 2 possible branches (value or fallback), we only need a naive partial application approach.
+
+This allows us to return a partially applied `Either` that has a pre-determined fallback logic branch.  How about we use this in an example:
 
 ```javascript
 const
-    Either      = require("../monads/Either")
+    Promise     = require("bluebird")
+  , Either      = require("../monads/Either")
   , fred        = { name : "fred" }
   , george      = { name : "george" }
+  // our partially applied Either function
   , orAnonymous = Either.or({ name : "anonymous" })
 
-console.log(Either.of(undefined).or(fred)) // Either<{ name: 'fred' }>
+console.log(Either.of(undefined).or(fred)) 
+// Either<{ name: 'fred' }>
 
-console.log(Either.of(george).or(fred)) // Either<{ name: 'george' }>
+console.log(Either.of(george).or(fred)) 
+// Either<{ name: 'george' }>
 
-const connections = [ fred, george, null, undefined ].map(orAnonymous)
+// mock looking up an array of connections
+// where people may or may not be authenticated with the service.
+const getActiveUsers = _ => Promise.resolve([ 
+    fred
+  , george
+  , null
+  , undefined 
+])
 
-console.log(connections)
+getActiveUsers().map(orAnonymous).then(console.log)
 /*
-[ Either<{ name: 'fred' }>,
-  Either<{ name: 'george' }>,
-  Either<{ name: 'anonymous' }>,
-  Either<{ name: 'anonymous' }> ]
+[ { name: 'fred' },
+  { name: 'george' },
+  { name: 'anonymous' },
+  { name: 'anonymous' } ]
+
 */
 
 ```
 
-As you can see this allows you to gracefully handle `Nothing`, but I am sure you could be asking, what is the big difference between `Either` and `Maybe`?
-
-The answer is: `Either` fallbacks to a default value when an `Nothing` is encountered, whereas `Maybe` does not run the transition to the next state when a `Nothing` is encountered.
-
-Let's see how this difference might look in a more tradition `if/else` approach:
+Well that is nice, but let's make the interface a little more intuitive with some OOP to extend our `Either` into a `User` that can either be logged in or anonymous.
 
 ```javascript
+class User extends Either {
+  // pure creation interface!
+  // always expose something that 
+  // plays nicely with Array.prototype
+  static User (user) {
+    return new User(user).or()
+  }
 
-// Maybe
-function maybeish (thing) {
-  thing && // do something to thing
+  static get anonymous () {
+    return { name : `anonymous-${User.UUID++}` }
+  }
+
+  or () {
+    return this.of( this.isEmpty ? User.anonymous : this )
+  }
+
 }
-
-// Either
-
-function eitherish (thing) {
-  thing = thing || "fallback value"
-  // do something with thing
-}
+// I cannot wait for ES6 static properties to hit Node.js
+User.UUID = 0
 ```
 
-As you may have noticed it is still a little awkward to handle deeply nested properties, but next we will illustrate how to compose our `Maybe` and `Either` to create a Javascript relevant version of a [`Lens`](https://www21.in.tum.de/teaching/fp/SS15/papers/17.pdf) to safely get and set arbitrarily deep properies on an `Object`.
+That did not require too much work, but added a lot of expressiveness to our API with minimal overhead.  All we really had to do was come up with a generic way to name our anonymous users and override our default `Either.prototype.or` behavior.
+
+Now let's see it in action:
+
+```javascript
+import {User} from "../monads/User"
+
+console.log(User(null))
+// User<{ name: 'anonymous-0' }>
+console.log(User(fred))
+// User<{ name: 'fred' }>
+getActiveUsers().map(User).then(console.log)
+/*
+[ { name: 'fred' },
+  { name: 'george' },
+  { name: 'anonymous-1' },
+  { name: 'anonymous-2' } ]
+*/
+```
+
+As you may have noticed it is still a little awkward to handle deeply nested properties with our current toolset.  Performing an `fmap` on `fred.address.streetname` would still cause us to throw unless we were sure that the property existed.
+
+In the next post, we will illustrate how to compose our `Maybe` and `Either` to create a Javascript relevant version of a [`Lens`](https://www21.in.tum.de/teaching/fp/SS15/papers/17.pdf) to safely get and set arbitrarily deep properies on an `Object`.
