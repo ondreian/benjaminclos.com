@@ -1,4 +1,4 @@
-<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>OO + Functional - Part 2 - Call Me Maybe? | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="OO + Functional - Part 2 - Call Me Maybe?"/><meta property="twitter:title" content="OO + Functional - Part 2 - Call Me Maybe?"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/oo-functional-part-2-call-me-maybe"/><meta property="twitter:card" content="summary"/><meta property="twitter:site" content="benjaminclos"/><meta property="og:author" content="Benjamin Clos"/><meta property="og:description" content="The second part in a series of thoughts on the benefits of marrying Functional and OOP principles, focusing on extending the Monad as a Maybe."/><meta property="twitter:description" content="The second part in a series of thoughts on the benefits of marrying Functional and OOP principles, focusing on extending the Monad as a Maybe."/><meta property="og:published_time" content="2016-08-17T04:00:00.000Z"/><meta property="og:tags" content="[object Object], [object Object], [object Object], [object Object]"/></head><body class="blog"><div class="_app_y0853_3804 "><div class="_top_y0853_3838 _navigation_y0853_3838 _detached_y0853_3855 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="/">home</a><a class="_nav-item_y0853_2925 " href="/blog">blog</a><a class="_nav-item_y0853_2925 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_y0853_3810 "><div class="_container_y0853_242 "> <div class="_columns_y0853_1930 "><div class="_column_y0853_1925 _is-8_y0853_1995 _is-offset-2_y0853_1968 "><article class="_container_y0853_242 "><header><h1 class="_title_1hkab_21 ">OO + Functional - Part 2 - Call Me Maybe?</h1><h3>8.17.2016</h3><h3>Benjamin Clos</h3><h3 class="_tag-list_1hkab_14 "><a href="/blog/tags/javascript">javascript</a><a href="/blog/tags/functional">functional</a><a href="/blog/tags/oop">oop</a><a href="/blog/tags/series-monads">series:monads</a></h3></header><div class="_content_1hkab_37 _block_y0853_238 "><p><em>This is the second post in a series of posts on the benefits of merging Functional Javascript with Object-Oriented Javascript.  The <code>Monad</code> class we are referencing here we previously defined in <a href="/blog/better-together-part-1-monad/">the first post</a>.</em></p>
+<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>OO + Functional - Part 2 - Call Me Maybe? | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="OO + Functional - Part 2 - Call Me Maybe?"/><meta property="twitter:title" content="OO + Functional - Part 2 - Call Me Maybe?"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/oo-functional-part-2-call-me-maybe"/><meta property="twitter:card" content="summary"/><meta property="twitter:site" content="benjaminclos"/><meta property="og:author" content="Benjamin Clos"/><meta property="og:description" content="The second part in a series of thoughts on the benefits of marrying Functional and OOP principles, focusing on extending the Monad as a Maybe."/><meta property="twitter:description" content="The second part in a series of thoughts on the benefits of marrying Functional and OOP principles, focusing on extending the Monad as a Maybe."/><meta property="og:published_time" content="2016-08-17T04:00:00.000Z"/><meta property="og:tags" content="[object Object], [object Object], [object Object], [object Object]"/></head><body class="blog"><div class="_app_y0853_3804 "><div class="_top_y0853_3838 _navigation_y0853_3838 _detached_y0853_3855 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="/">home</a><a class="_nav-item_y0853_2925 " href="/blog">blog</a><a class="_nav-item_y0853_2925 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_y0853_3810 "><div class="_container_y0853_242 "> <div class="_columns_y0853_1930 "><div class="_column_y0853_1925 _is-8_y0853_1995 _is-offset-2_y0853_1968 "><article class="_container_y0853_242 "><header><h1 class="_title_1o3lx_21 ">OO + Functional - Part 2 - Call Me Maybe?</h1><h3>8.17.2016</h3><h3>Benjamin Clos</h3><h3 class="_tag-list_1o3lx_14 "><a href="/blog/tags/javascript">javascript</a><a href="/blog/tags/functional">functional</a><a href="/blog/tags/oop">oop</a><a href="/blog/tags/series-monads">series:monads</a></h3></header><div class="_content_1o3lx_37 _block_y0853_238 "><p><em>This is the second post in a series of posts on the benefits of merging Functional Javascript with Object-Oriented Javascript.  The <code>Monad</code> class we are referencing here we previously defined in <a href="/blog/better-together-part-1-monad/">the first post</a>.</em></p>
 <h2>Call Me Maybe?</h2>
 <p>With our base <code>Monad</code> in tow, let's create a useful <code>Maybe</code> monad that allows us to safely short circuit when we find a <code>Nothing</code> in our computational chains.</p>
 <p><code>Nothing</code> in the context of Javascript is <code>null</code> or <code>undefined</code>, a constant pain where most language generally only have a singular Constant to represent <code>Nothing</code></p>
@@ -16,7 +16,7 @@ User.find(realId).then( user =&gt; {
 <p><img src="http://imgs.xkcd.com/comics/schrodinger.jpg" alt="xkcd shrodinger"></p>
 <p>We don't actually know if user is <code>Nothing</code> until we look, and this can cause all sorts of problems for Javascript developers, experienced and beginners alike.  The wise among you will note that you can use <code>Promise.prototype.catch</code> to handle such an error, but the added noise that this can incur in your <code>catch</code> handler generally distracts from the clarity of handling actual operational errors, like recovering from a network partition, an unreachable database, or a filesystem error via properly scoped <a href="http://bluebirdjs.com/docs/api/catch.html#filtered-catch"><code>Error</code></a> objects.</p>
 <p>It would be more meaningful to simply short-circuit this type of operation most of the time.</p>
-<h2>Call Me Maybe?</h2>
+<h2>Creating Our Maybe</h2>
 <p>We can create the <code>Maybe</code> monad by extending our previously explained <code>Monad</code>to help with this problem.</p>
 <pre><code class="hljs">
 <span class="hljs-keyword">const</span>
@@ -46,15 +46,17 @@ User.find(realId).then( user =&gt; {
 
 </code></pre>
 <p>Since this extends the <code>Monad</code> and thus the <code>Function</code> we can transparently do some useful state transitions (<code>fmap</code>) with it. How about we give it a whirl to highlight the utility of our new <code>Maybe</code> vs our base <code>Monad</code>.</p>
-<pre><code class="hljs">
-<span class="hljs-keyword">const</span> creditsInEuros = user =&gt; user.credit * <span class="hljs-number">1.34</span> <span class="hljs-comment">// arbitrary conversion rate</span>
-
+<pre><code class="hljs"><span class="hljs-comment">// arbitrary conversion rate</span>
+<span class="hljs-keyword">const</span> creditsInEuros = user =&gt; user.credit * <span class="hljs-number">1.34</span> 
 <span class="hljs-keyword">const</span> zilch = Monad.of(<span class="hljs-literal">undefined</span>)
 <span class="hljs-keyword">const</span> user  = Maybe.of(<span class="hljs-literal">undefined</span>)
 
-<span class="hljs-built_in">console</span>.log(creditsInEuros(<span class="hljs-literal">undefined</span>))  <span class="hljs-comment">// Throws</span>
-<span class="hljs-built_in">console</span>.log(zilch(creditsInEuros))      <span class="hljs-comment">// Throws as well</span>
-<span class="hljs-built_in">console</span>.log(user(creditsInEuros))       <span class="hljs-comment">// Maybe&lt;undefined&gt; : No Error!</span>
+<span class="hljs-built_in">console</span>.log(creditsInEuros(<span class="hljs-literal">undefined</span>))
+<span class="hljs-comment">// Throws</span>
+<span class="hljs-built_in">console</span>.log(zilch(creditsInEuros))
+<span class="hljs-comment">// Throws as well</span>
+<span class="hljs-built_in">console</span>.log(user(creditsInEuros))       
+<span class="hljs-comment">// Maybe&lt;undefined&gt; : No Error!</span>
 
 </code></pre>
 <p>This seemingly arbitary difference is incredibly important, because we now can decoupling our state transitions from our logical branches. This reduces our cognitive overhead, and adds a level of reliability and reuse to our logical branches (the <code>Maybe</code> in this case).</p>
@@ -78,10 +80,14 @@ User.find(realId).then( user =&gt; {
   , {Maybe}         = <span class="hljs-built_in">require</span>(<span class="hljs-string">"./Maybe"</span>)
   , Fred            = { name : <span class="hljs-string">"Fred"</span> }
 
-<span class="hljs-comment">// We are going to use Promise.resolve to generalize some asynchronous lookup</span>
-<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-literal">null</span>).then(Maybe).then( nonExistantUser =&gt; {
-  <span class="hljs-keyword">throw</span> <span class="hljs-string">"I should have never ran"</span>
-}).catch(<span class="hljs-built_in">console</span>.log)
+<span class="hljs-comment">// We are going to use Promise.resolve </span>
+<span class="hljs-comment">// to generalize some asynchronous lookup</span>
+<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-literal">null</span>)
+  .then(Maybe)
+  .then( nonExistantUser =&gt; {
+    <span class="hljs-keyword">throw</span> <span class="hljs-string">"I should have never ran"</span>
+  })
+  .catch(<span class="hljs-built_in">console</span>.log)
 
 <span class="hljs-built_in">Promise</span>.resolve(fred).then(Maybe).then(<span class="hljs-built_in">console</span>.log)
 <span class="hljs-comment">/*
