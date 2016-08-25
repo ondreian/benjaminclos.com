@@ -1,16 +1,16 @@
 import Promise               from "bluebird"
 import m                     from "mithril"
 
+import images                from "images"
 import {bulma, styles, raw}  from "utils/bulma"
 import Lazy                  from "utils/lazy"
 import Matrix                from "utils/Matrix"
 import List                  from "utils/List"
 import Coin                  from "utils/Coin"
 import Euclidean             from "utils/Euclidean"
-
 import Roll                  from "animations/Roll"
-
-import images                from "images"
+import social                from "config/social"
+import {menu}                from "layouts/App"
 
 function randomImage (images) {
   return `/images/` + images[ Math.floor( Math.random() * images.length ) ]
@@ -78,13 +78,14 @@ export default class Landscape {
     })
   }
 
-  static view (ctrl) {
+  static view (ctrl, {title, subtitle}) {
     return m( 
         styles.landscape()
       , Landscape.dataset(ctrl)
       , bulma.headline(
             m("h1", "Benjamin Clos")
           , m("h2", "Full / Stack")
+          , menu(styles.social(), social)
         )
       , ctrl
           | Landscape.column()

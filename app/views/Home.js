@@ -11,6 +11,6 @@ export default class Home {
 
   static view (ctrl) {
     return m.component(Landscape, ctrl)
-      | App()
+      | App.nofooter()
   }
 }

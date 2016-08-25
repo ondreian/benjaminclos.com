@@ -25,9 +25,12 @@ function nav (items) {
 }
 
 function affix (ele) {
-   if (!document.getElementsByClassName(raw.landscape).length && !ele.classList.contains(raw.detached)) {
-    ele.classList.add(raw.detached)
-    return
+   if (
+        !document.getElementsByClassName(raw.landscape).length && 
+        !ele.classList.contains(raw.detached)
+    ) {
+      ele.classList.add(raw.detached)
+      return
   }
 
   document.onscroll = onlyEvery(200, evt => {
@@ -54,15 +57,8 @@ function affix (ele) {
   })
 }
 
-/*
-function persist (ele, isInitialized, ctx) {
-  if (isInitialized) return
-  ctx.retain = true
-  affix(ele)
-}
-*/
 
-function menu (name, items) {
+export function menu (name, items) {
   const className = name
     | styles.navigation()
     | styles.isPaddingless()
@@ -89,5 +85,12 @@ export default function App (view) {
         header(top)
       , view
       , menu(styles.bottom(), social)
+    )
+}
+
+App.nofooter = function nofooter (view) {
+  return bulma.app(
+        header(top)
+      , view
     )
 }
