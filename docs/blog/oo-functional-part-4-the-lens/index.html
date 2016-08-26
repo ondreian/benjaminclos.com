@@ -1,0 +1,194 @@
+<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>OO + Functional - Part 4 - The Lens | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="OO + Functional - Part 4 - The Lens"/><meta property="twitter:title" content="OO + Functional - Part 4 - The Lens"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/oo-functional-part-4-the-lens"/><meta property="twitter:card" content="summary"/><meta property="twitter:site" content="benjaminclos"/><meta property="og:description" content="combining Maybe &amp; Either to create a Lens."/><meta property="twitter:description" content="combining Maybe &amp; Either to create a Lens."/><meta property="og:published_time" content="2016-08-25T04:00:00.000Z"/><meta property="og:tags" content="[object Object], [object Object], [object Object], [object Object]"/></head><body class="blog"><div class="_app_y0853_3804 "><div class="_top_y0853_3838 _navigation_y0853_3838 _detached_y0853_3855 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="/">home</a><a class="_nav-item_y0853_2925 " href="/blog">blog</a><a class="_nav-item_y0853_2925 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_y0853_3810 "><div class="_container_y0853_242 "> <div class="_columns_y0853_1930 "><div class="_column_y0853_1925 _is-8_y0853_1995 _is-offset-2_y0853_1968 "><article class="_container_y0853_242 "><header><h1 class="_title_1bjig_21 ">OO + Functional - Part 4 - The Lens</h1><h3>8.25.2016</h3><h3></h3><h3 class="_tag-list_1bjig_14 "><a href="/blog/tags/javascript">javascript</a><a href="/blog/tags/functional">functional</a><a href="/blog/tags/oop">oop</a><a href="/blog/tags/series-monads">series:monads</a></h3></header><div class="_content_1bjig_37 _block_y0853_238 "><p>If you recall at the end of my <a href="/blog/oo-functional-part-3-either-/">last post</a> we discussed that we still have problems both setting and getting deep properties on an <code>Object</code>.</p>
+<p><em>what if I were to tell you that there is something to assist with this?</em></p>
+<p>Let's look at how we might want our API to look:</p>
+<pre><code class="hljs">
+<span class="hljs-keyword">const</span>
+    {Lens}   = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../monads/Lens"</span>)
+  , {Maybe}  = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../monads/Maybe"</span>)
+  , account  = Maybe({ name : <span class="hljs-string">"george"</span> })
+  , nothing  = Maybe(<span class="hljs-literal">null</span>)
+  , address  = Lens(<span class="hljs-string">"address"</span>)
+  , street   = Lens(<span class="hljs-string">"street"</span>)
+  <span class="hljs-comment">// we want Lens to be composable!</span>
+  , streetAddress = address(street)
+
+streetAddress(<span class="hljs-literal">undefined</span>)
+<span class="hljs-comment">// Maybe&lt;undefined&gt;</span>
+
+streetAddress.put(account, <span class="hljs-string">"lazy lane"</span>)
+<span class="hljs-comment">// Maybe&lt;{ name: 'george', address: { street: 'lazy lane' } }&gt;</span>
+<span class="hljs-comment">// </span>
+streetAddress.put(nothing, <span class="hljs-string">"100 East Nowhere St."</span>)
+<span class="hljs-comment">// Maybe&lt;null&gt;</span>
+
+<span class="hljs-comment">/*
+ * by returning an &lt;Either&gt; from our lens 
+ * we can gracefully recover if desired
+ * or just let it short-circuit
+*/</span>
+streetAddress(account)
+<span class="hljs-comment">// Either&lt;'lazy lane'&gt;</span>
+
+streetAddress(<span class="hljs-literal">null</span>).fmap(<span class="hljs-built_in">console</span>.log)
+<span class="hljs-comment">// Either&lt;null&gt;</span>
+
+</code></pre>
+<p>We seem to want a lot of features, given how few and small our building blocks are.  Let's take a step forward in our process and talk about composition which will allow us to compose a set of <code>Lens</code> objects into a singular <code>Lens</code></p>
+<h2>Composition</h2>
+<p>First, we now realize we want a way to <code>compose</code> our state transitions, and since this is a very useful property to have, let's give our base <code>Monad</code> the <code>compose</code> method so all of our Monads have access to it:</p>
+<pre><code class="hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monad</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Function</span> </span>{
+  compose (...fns) {
+    <span class="hljs-comment">// flatten our functional pipeline</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.prototype.concat.apply([], fns)
+      <span class="hljs-comment">// here we are applying our state transitions</span>
+      <span class="hljs-comment">// through the composed functional pipeline</span>
+      .reduce( (monad, fn) =&gt; monad(fn) , <span class="hljs-keyword">this</span>)
+  }
+}
+
+</code></pre>
+<p>It is important that we ensure we are adding developer ergonomics by flattening our pipeline before we apply it.  This extra effort makes it considerably more powerful.</p>
+<h2>Lens - Get</h2>
+<p>Now that we have this new power of composition, let's put it to use by starting work on our <code>Lens</code> by first creating the ability to safely get properties:</p>
+<pre><code class="hljs">
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lens</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Monad</span> </span>{
+
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">of</span> (...path) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">this</span>(path)
+  }
+
+  <span class="hljs-keyword">static</span> Lens (...path) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> Lens(path)
+  }
+  <span class="hljs-comment">/*
+    Providing a functional way to introspect about the
+    type of monad we are utilizing is important
+  */</span>
+  <span class="hljs-keyword">static</span> isLens (thing) {
+    <span class="hljs-keyword">return</span> thing <span class="hljs-keyword">instanceof</span> Lens
+  }
+
+  <span class="hljs-comment">/*
+    a partially applied getter, which allows
+    us to declare a series of state transitions
+    or `fmap`s
+  */</span>
+  <span class="hljs-keyword">static</span> getter (key) {
+    <span class="hljs-keyword">return</span> obj =&gt; Either(obj).fmap( obj =&gt; obj[key] )
+  }
+  <span class="hljs-comment">/*
+    always make functional composition 
+    a first-class citizen of our ecosystem
+  */</span>
+  <span class="hljs-keyword">static</span> concat (...lenses) {
+    <span class="hljs-keyword">return</span> Lens.of( ...lenses.reduce( (path, lens) =&gt; {
+      <span class="hljs-keyword">return</span> path.concat(lens.path || lens)
+    }, []))
+  }
+
+  <span class="hljs-keyword">constructor</span> (path) {
+    <span class="hljs-comment">// our path is an array, so let's</span>
+    <span class="hljs-comment">// generate our lookup pipeline</span>
+    <span class="hljs-keyword">const</span> getter = path.map(Lens.getter)
+    <span class="hljs-keyword">const</span> self  = <span class="hljs-built_in">Object</span>.setPrototypeOf( val =&gt; {
+      <span class="hljs-comment">// make Lens composable with our introspection</span>
+      <span class="hljs-keyword">if</span> (Lens.isLens(val)) <span class="hljs-keyword">return</span> Lens.concat(self, val)
+      <span class="hljs-keyword">return</span> isMonad(val)
+        ? val.fmap(self)
+          <span class="hljs-comment">// remember our Monad.prototype.compose ?</span>
+          <span class="hljs-comment">// here we are using it to apply our </span>
+          <span class="hljs-comment">// previously generated pipeline to our value</span>
+          <span class="hljs-comment">// returning an &lt;Either&gt; here allows</span>
+          <span class="hljs-comment">// for graceful recovery or short-circuit</span>
+          <span class="hljs-comment">// when a path is not found</span>
+        : Either(val).compose(getter)
+    }, <span class="hljs-keyword">new</span>.target.prototype)
+    <span class="hljs-comment">// make the path and getter public</span>
+    <span class="hljs-comment">// so other extensions or compositions might use them</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.assign(self, {path, getter})
+  }
+  <span class="hljs-comment">// we need to override our base Monad inspect</span>
+  <span class="hljs-comment">// because the Len.prototype.path is more </span>
+  <span class="hljs-comment">// representative of the internal state</span>
+  inspect() {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${this.constructor.name}</span>&lt;`</span> + util.inspect(<span class="hljs-keyword">this</span>.path) + <span class="hljs-string">`&gt;`</span>
+  }
+}
+
+</code></pre>
+<p>Well that was a lot of lines of code (or comments), hopefully you can see where we are going with this.  Now we can use our Lens to get any property, whether it exists or not, and transition (<code>fmap</code>) it safely into another state.</p>
+<h2>Lens - Put</h2>
+<p>Now we need a way to <code>put</code> values though, as a <code>Lens</code> is not very useful without it.  Lets add some static and instance methods to our <code>Lens</code>:</p>
+<pre><code class="hljs">
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Lens</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Monad</span> </span>{
+  <span class="hljs-comment">/**
+   * recursively crawl our Object structure
+   */</span>
+  <span class="hljs-keyword">static</span> put (focus, path, value, root) {
+    <span class="hljs-comment">// the current property to check</span>
+    <span class="hljs-comment">// by shifting the values</span>
+    <span class="hljs-comment">// we ensure we do not infinitely recurse</span>
+    <span class="hljs-keyword">const</span> key = path.shift()
+    <span class="hljs-comment">// maybe sure we have something to focus on</span>
+    <span class="hljs-comment">// for this iteration</span>
+    focus = Either(focus).or({})
+    <span class="hljs-comment">// if we are in our first put</span>
+    <span class="hljs-keyword">if</span> (!root) root = Maybe(focus)
+    <span class="hljs-comment">// if we are out of properties to recurse</span>
+    <span class="hljs-comment">// we should return the root reference</span>
+    <span class="hljs-keyword">if</span> (!path.length) {
+      focus.fmap( obj =&gt; obj[key] = value )
+      <span class="hljs-keyword">return</span> root
+    }
+    <span class="hljs-comment">// je'recurse!</span>
+    <span class="hljs-keyword">return</span> Lens.put( 
+        focus.fmap( obj =&gt; obj[key] = obj[key] || {} )
+      , path
+      , value
+      , root
+    )
+  }
+
+
+  put (obj, val) {
+    <span class="hljs-comment">// ensure we are using a Monad</span>
+    <span class="hljs-comment">// for this operation</span>
+    <span class="hljs-keyword">const</span> focus = isMonad(obj)
+      ? obj
+      : Maybe(obj)
+
+    <span class="hljs-comment">// recast the obj back to its original Monadic type</span>
+    <span class="hljs-comment">// or just return the result</span>
+    <span class="hljs-keyword">const</span> recast = isMonad(obj) 
+      <span class="hljs-comment">// all well-behaved Monadic structures</span>
+      <span class="hljs-comment">// in our ecosystem have a static `of`</span>
+      <span class="hljs-comment">// creation interface</span>
+      ? val =&gt; obj.constructor.of(val)
+      <span class="hljs-comment">// or just return the identity of our state</span>
+      <span class="hljs-comment">// transition (fmap)</span>
+      : val =&gt; val
+
+    <span class="hljs-comment">// utilizing fmap allows our previous logical branches</span>
+    <span class="hljs-comment">// to transparently transition or handle this state transition</span>
+    <span class="hljs-comment">// we should clone our path so that </span>
+    <span class="hljs-comment">// a Lens may be used more than once!</span>
+    <span class="hljs-keyword">return</span> focus
+      .fmap( ctx =&gt; Lens.put(ctx, <span class="hljs-keyword">this</span>.path.slice(<span class="hljs-number">0</span>), val) )
+      .fmap(recast)
+
+  }
+}
+</code></pre>
+<p>Hopefully the line-by-line commentary in the code blocks are useful for dissecting what is occuring here.  Our <code>Lens</code> is now complete, with the ability to get and put arbitrarily nested properties.  There are a lot of excellent libraries out there already for many of these operations such as <a href="http://ramdajs.com/0.21.0/docs/#lens">ramda.js</a></p>
+<p>Currently all of the Monads we have discussed are sychronous in nature. Next we will introduce a fundamental building block of asynchronous Monads; the <code>IO</code>.</p>
+</div></article><section class="section comments"><div class="content"><div id="disqus_thread"><script>(function() {  // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//benjaminclos.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></section></div></div></div></div><div class="_navigation_y0853_3838 _bottom_y0853_3906 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="https://github.com/ondreian"><i class="ion-social-github"></i></a><a class="_nav-item_y0853_2925 " href="https://twitter.com/benjaminclos"><i class="ion-social-twitter"></i></a></div></div></div></div></div><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-82549801-1', 'auto');
+ga('send', 'pageview');</script></body></html>
