@@ -8,7 +8,7 @@ block main
   section(class=css.index)
     ol(class=css.posts)
       each post in tag.posts
-        li(class=css.block)
+        li(class=css.block+css.postCard)
           h1(class=css.title)
             a(href=post.path)!= post.title
           h3(class=css.timestamp)=helpers.moment(publishDate).format("M.D.YYYY")

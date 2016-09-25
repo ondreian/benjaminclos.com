@@ -10,6 +10,6 @@ function boot () {
   })	
 }
 
-window.onresize = onlyEvery( 100 ,  m.redraw )
+window.onresize = onlyEvery( 1000/28,  m.redraw )
 
 document.addEventListener('DOMContentLoaded', boot)

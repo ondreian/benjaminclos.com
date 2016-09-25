@@ -1,0 +1,305 @@
+<html><head><link href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.1.0/css/bulma.min.css" rel="stylesheet"/><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.5.0/styles/monokai-sublime.min.css"/><link href="http://fonts.googleapis.com/css?family=Playfair+Display|Amiri" rel="stylesheet" type="text/css"/><link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet"/><link rel="stylesheet" href="/app.css"/><title>OO + Functional - Part 5 - Ye Olde IO And You | Journey Through Cyberspace &amp; Realtime</title><meta property="og:title" content="OO + Functional - Part 5 - Ye Olde IO And You"/><meta property="twitter:title" content="OO + Functional - Part 5 - Ye Olde IO And You"/><meta property="og:type" content="article"/><meta property="og:url" content="https://i.am.benjaminclos.com/blog/oo-functional-part-5-ye-olde-io-and-you"/><meta property="twitter:card" content="summary"/><meta property="twitter:site" content="benjaminclos"/><meta property="og:author" content="Benjamin Clos"/><meta property="og:description" content="The fifth part in my series, diving into IO and some simplistic real-world uses."/><meta property="twitter:description" content="The fifth part in my series, diving into IO and some simplistic real-world uses."/><meta property="og:published_time" content="2016-09-24T04:00:00.000Z"/><meta property="og:tags" content="[object Object], [object Object], [object Object], [object Object], [object Object]"/><style>.hljs-comment {
+  color: #5B8B05;
+}
+</style></head><body class="blog"><div class="_app_y0853_3804 "><div class="_top_y0853_3838 _navigation_y0853_3838 _detached_y0853_3855 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="/">home</a><a class="_nav-item_y0853_2925 " href="/blog">blog</a><a class="_nav-item_y0853_2925 " href="/blog/tags">tags</a></div></div></div></div><div class="_main_y0853_3810 "><div class="_container_y0853_242 "> <div class="_columns_y0853_1930 "><div class="_column_y0853_1925 _is-8_y0853_1995 _is-offset-2_y0853_1968 "><article class="_container_y0853_242 "><header><h1 class="_title_1bjig_21 ">OO + Functional - Part 5 - Ye Olde IO And You</h1><h3>9.24.2016</h3><h3>Benjamin Clos</h3><h3 class="_tag-list_1bjig_14 "><a href="/blog/tags/javascript">javascript</a><a href="/blog/tags/functional">functional</a><a href="/blog/tags/oop">oop</a><a href="/blog/tags/series-monads">series:monads</a><a href="/blog/tags/asynchronous">asynchronous</a></h3></header><div class="_content_1bjig_37 _block_y0853_238 "><p>Hopefully by now you are comfortable thinking about writing javascript in a slightly different way, continuing with our current topic we will introduce the concept of <code>IO</code>, and how to use it to recover from errors as we <strong>asychronously</strong> transition (<code>fmap</code>) from one state to another.</p>
+<p><strong><em>Most of the following code will be very similar to how Promise works under the hood, please make an educated decision before doing something like this in production.  Other solutions, such as <a href="http://bluebirdjs.com/docs/getting-started.html">bluebird</a> are a mature implementations with a lot of important optimizations.</em></strong></p>
+<h1>IO</h1>
+<p>What we want out of our <code>IO</code> is a ran to run some <code>Function</code> or series of <code>Function</code> so that at each layer there are only two possible logic branches: <code>resolve</code> and <code>reject</code>.  That's right, the exact same logical branching as <code>Promise</code>.  The difference is that IO is not eagerly resolved, whereas a <code>Promise</code> is.</p>
+<p>Let's visualize how these logical branches work:</p>
+<p><img src="/graphics/io-monad-logic-branching-web.jpg" alt="logical branching with IO"></p>
+<p>A few lines of code are worth a million words of abstraction, let's look at how we might implement our <code>IO</code>.</p>
+<pre><code class="hljs">
+<span class="hljs-comment">// naive "thennable" check to try to catch as many</span>
+<span class="hljs-comment">// different Promise implementations as possible</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isPromise</span> (<span class="hljs-params">thing</span>) </span>{
+  <span class="hljs-keyword">return</span> thing &amp;&amp; <span class="hljs-keyword">typeof</span> thing.then === <span class="hljs-string">"function"</span>
+}
+    
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">IO</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Monad</span> </span>{
+  <span class="hljs-comment">/**
+   * Determines if is IO
+   *
+   * @param      {Any}   thing   The thing
+   * @return     {boolean}  True if io, False otherwise.
+   */</span>
+  <span class="hljs-keyword">static</span> isIO (thing) {
+    <span class="hljs-keyword">return</span> thing <span class="hljs-keyword">instanceof</span> IO
+  }
+  <span class="hljs-comment">/**
+   * thennable absorption function
+   * since IO is a thennable it also handles that
+
+   * @param      {Any}       val      The value
+   * @param      {Function}  resolve  The resolve fn
+   * @param      {Function}  reject   The reject fn
+   */</span>
+  <span class="hljs-keyword">static</span> absorb (val, resolve, reject) {
+    <span class="hljs-keyword">return</span> isPromise(val)
+      ? val.then(resolve, reject)
+      : resolve(val)
+  }
+  <span class="hljs-comment">/**
+   * helper to ensure we can functionally throw Errors
+   */</span>
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">throw</span> (err) {
+    <span class="hljs-keyword">throw</span> err
+  }
+  <span class="hljs-comment">/**
+   * creates a static IO that has the Identity of val
+   *
+   * @param      {Any}  val     The identity of this IO
+   * @return     {IO}           The IO instance   
+   */</span> 
+  <span class="hljs-keyword">static</span> <span class="hljs-keyword">of</span> (val) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-keyword">this</span>( (resolve, reject) =&gt; resolve(val) )
+  }
+  <span class="hljs-comment">/**
+   * creates an IO instance out of an arbitrary binary function
+   * which accepts resolve and reject arguments
+   *
+   * @class      IO (name)
+   * @param      {Function}  fn      The function
+   * @return     {IO}                The IO instance
+   */</span>
+  <span class="hljs-keyword">static</span> IO (fn) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> IO(fn)
+  }
+  <span class="hljs-comment">/**
+   * performs our asynchronous 
+   * operation wrapped in try/catch
+   *
+   * @param      {Function}  resolve  The resolve
+   * @param      {Function}  reject   The reject
+   * @param      {Function}  fn       The function
+   */</span>
+  <span class="hljs-keyword">static</span> perform (resolve, reject, fn) {
+    <span class="hljs-comment">// this is just to prove the asynchronousity of our</span>
+    <span class="hljs-comment">// logic.  You may or may not actually want to do this</span>
+    <span class="hljs-comment">// in real world code depending on a variety of factors.</span>
+    setImmediate( <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+      <span class="hljs-keyword">try</span> {
+        <span class="hljs-keyword">const</span> val = fn(resolve, reject)
+        <span class="hljs-keyword">if</span> (isPromise(val)) IO.absorb(val, resolve, reject)
+      } 
+      <span class="hljs-keyword">catch</span> (err) {
+        isFunction (reject)
+          ? reject(err)
+          : IO.throw(err)
+      }
+    })
+  }
+
+  <span class="hljs-comment">/**
+   * Constructs the IO
+   *
+   * @param      {Function}  fn      The function
+   * @return     {IO Function}       The IO instance
+   */</span>
+  <span class="hljs-keyword">constructor</span> (fn) {
+    <span class="hljs-keyword">if</span> (!isFunction(fn) &amp;&amp; !isPromise(fn)) {
+      <span class="hljs-comment">// if it isn't a promise or a thennable</span>
+      <span class="hljs-comment">// make it a static IO</span>
+      <span class="hljs-keyword">return</span> IO.of(fn)
+    }
+    <span class="hljs-comment">// don't nest IO structures</span>
+    <span class="hljs-keyword">if</span> (IO.isIO(fn)) <span class="hljs-keyword">return</span> fn
+
+    <span class="hljs-keyword">return</span> <span class="hljs-built_in">Object</span>.setPrototypeOf( (resolve, reject) =&gt; {
+      <span class="hljs-keyword">const</span> val = IO.perform(resolve, reject, fn)
+    }, <span class="hljs-keyword">new</span>.target.prototype)
+  }
+
+  <span class="hljs-comment">/**
+   * run our IO instance
+   *
+   * @param      {Function}  resolve  The resolve
+   * @param      {Function}  reject   The reject
+   * @return     {void}  
+   */</span>
+  run (resolve = noop, reject = IO.throw) {
+    <span class="hljs-keyword">this</span>(resolve, reject)
+  }
+
+  <span class="hljs-comment">/**
+   * supporting Promises through a thenable interface
+   *
+   * @param      {Function}  resolve  The resolve
+   * @param      {Function}  reject   The reject
+   */</span>
+  then (resolve, reject) {
+    <span class="hljs-keyword">this</span>.run(resolve, reject)
+  }
+
+  <span class="hljs-comment">/**
+   * recover from Errors in our IO
+   *
+   * @param      {Function}  fn      The recovery function
+   * @return     {IO}                The IO instance
+   */</span>
+  recover (fn) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.constructor.IO( (resolve, reject) =&gt; {
+      <span class="hljs-keyword">this</span>(resolve, err =&gt; {
+        resolve(fn(err))
+      })
+    })
+  }
+  <span class="hljs-comment">/**
+   * we cannot inspect Asynchronous values ahead of time
+   *
+   * @return     {String}  placeholder value
+   */</span>
+  inspect () {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">`&lt;<span class="hljs-subst">${this.constructor.name}</span>:asynchronous&gt;`</span>
+  }
+  <span class="hljs-comment">/**
+   * our state transition in our IO sequence
+   *
+   * @param      {Function}  fn      The function
+   * @return     {IO}                A new IO instance
+   */</span>
+  fmap (fn) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.constructor.IO( (resolve, reject)=&gt; {
+      <span class="hljs-keyword">this</span>( val =&gt; {
+        <span class="hljs-comment">// The previous value could be anything</span>
+        <span class="hljs-comment">// so our IO must absorb it before we </span>
+        <span class="hljs-comment">// transition to its next state</span>
+        IO.absorb(val, resolved =&gt; {
+          IO.perform(resolve, reject, _ =&gt; {
+            <span class="hljs-comment">// absorb the state transition</span>
+            IO.absorb(fn(resolved), resolve, reject)
+          })
+        }, reject)
+      }, reject)
+    })
+  }
+  <span class="hljs-comment">/**
+   * bind an IO to a resolve and reject Function
+   * this provides an easy interface for usage where
+   * you want your IO to be `this` agnostic, such as
+   * setTimeout and setInterval.
+   *
+   * @param      {Function}  resolve  The resolve
+   * @param      {Function}  reject   The reject
+   * @return     {Function}           The bound IO
+   */</span>
+  bind (resolve, reject) {
+    <span class="hljs-keyword">const</span> self = <span class="hljs-keyword">this</span>
+    <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">boundIO</span> (<span class="hljs-params"></span>) </span>{ self.run(resolve, reject) }
+  }
+}
+
+
+</code></pre>
+<p>Hopefully there are enough comments to understand all of the basics of what we are doing with our <code>IO</code>.  While this is very similar to how a <code>Promise</code> works, with remember our <code>IO</code> is not eagerly evaluated.  Let's highlight this difference with a small example:</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> ioFour = IO.of(<span class="hljs-number">4</span>)
+<span class="hljs-keyword">const</span> double = x =&gt; x * <span class="hljs-number">2</span>
+
+<span class="hljs-comment">// this is immediately tries to resolve the value</span>
+<span class="hljs-comment">// of the Promise chain asychronously</span>
+<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-number">4</span>).then(double)
+<span class="hljs-comment">// this has just created a series of lazy IO operations</span>
+<span class="hljs-keyword">const</span> eight = ioFour.fmap(double) 
+<span class="hljs-comment">// the &lt;IO:eight&gt; is only evaluated now</span>
+eight(<span class="hljs-built_in">console</span>.log)
+</code></pre>
+<p>Since our IO provides <code>IO.prototype.then</code> or a <code>thennable</code> interface, we can still mix these eager and lazily evaluated constructs safely without some of the traditional problems associated with mixing eager and lazy logic.  How about we build something slightly more interesting with our <code>IO</code>;  a simplistic Caching layer.</p>
+<p>First we are going to need a util to make our requests:</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> https = <span class="hljs-built_in">require</span>(<span class="hljs-string">"https"</span>)
+<span class="hljs-comment">// simplistic get API request</span>
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">req</span> (<span class="hljs-params">url</span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>( (resolve, reject)=&gt; {
+    https.get(url, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>{
+      <span class="hljs-keyword">let</span> body = <span class="hljs-string">''</span>;
+
+      res.on(<span class="hljs-string">'data'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">chunk</span>)</span>{
+          body += chunk;
+      });
+
+      res.on(<span class="hljs-string">'end'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>{
+        resolve(body)
+      });
+    }).on(<span class="hljs-string">'error'</span>, reject)
+  })
+}
+</code></pre>
+<p>and then we need to make a <code>Cache</code> that inherits from our <code>IO</code>:</p>
+<pre><code class="hljs"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cache</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">IO</span> </span>{
+  <span class="hljs-comment">/**
+   * creates the Cache
+   *
+   * @param      {Integer}  ttl     The ttl in milliseconds
+   * @return     {Cache}            The instance
+   */</span>
+  <span class="hljs-keyword">static</span> create (ttl) {
+    <span class="hljs-comment">// put it in an IO wrapper</span>
+    <span class="hljs-keyword">return</span> Cache.of({ store: {}, ttl })
+  }
+  <span class="hljs-comment">/**
+   * creates an fmap for a url
+   *
+   * @param      {Url}   url     The url
+   * @return     {Cache}         an IO branch for the URL
+   */</span>
+  fetch (url) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.fmap( cache =&gt; {
+      <span class="hljs-keyword">const</span> 
+          { store, ttl }     = cache
+        , cached             = store[url] = store[url] || {}
+        , { result, expiry } = cached
+      <span class="hljs-comment">// should we refresh our local copy from the remote?</span>
+      <span class="hljs-keyword">if</span> (!expiry || <span class="hljs-built_in">Date</span>.now() &gt; expiry )  {
+        <span class="hljs-keyword">return</span> req(url).then( result =&gt; {
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`[cache] miss &gt;&gt;&gt; <span class="hljs-subst">${url}</span>`</span>)
+          cached.result = result
+          cached.expiry = <span class="hljs-built_in">Date</span>.now() + ttl
+          <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(result)
+        }).catch( err =&gt;  {
+        <span class="hljs-comment">// was there some sort of Error?</span>
+          <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`[cache] error &gt;&gt;&gt; <span class="hljs-subst">${err.message}</span>`</span>)
+          cache.expiry = <span class="hljs-number">0</span>
+          cache.result = <span class="hljs-literal">null</span>
+          <span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-literal">null</span>)
+        })
+      }
+      <span class="hljs-comment">// Use the local cached copy</span>
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`[cache] hit  &gt;&gt;&gt; <span class="hljs-subst">${url}</span>`</span>)
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(result)
+    })
+  }
+}
+</code></pre>
+<p>Now let's write something that takes our <code>Cache</code> and fetches a url when it has expired after 5 seconds or returns the cached version otherwise.</p>
+<pre><code class="hljs"><span class="hljs-keyword">const</span> 
+    cache  = Cache.create(<span class="hljs-number">5000</span>)
+  , nasa   = cache
+      <span class="hljs-comment">// some random nasa url to test against</span>
+      .fetch(<span class="hljs-string">"https://api.nasa.gov/planetary/apod"</span>)
+      <span class="hljs-comment">// and then after we fetch it we want to parse it!</span>
+      <span class="hljs-comment">// in the real world it's better to parse once prior</span>
+      <span class="hljs-comment">// to caching the response, so you only have to run</span>
+      <span class="hljs-comment">// JSON.parse once, but this is for demonstration</span>
+      .fmap(Maybe)
+      .fmap(<span class="hljs-built_in">JSON</span>.parse)
+  , log = type =&gt; val =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`<span class="hljs-subst">${type}</span> : `</span>, val)
+    <span class="hljs-comment">// we want to bind it to be `this` agnostic for our</span>
+    <span class="hljs-comment">// setInterval</span>
+  , run = nasa.bind(log(<span class="hljs-string">"success"</span>), log(<span class="hljs-string">"error"</span>))
+
+setInterval(run, <span class="hljs-number">2500</span>)
+
+</code></pre>
+<p>Since we do not have an API key, NASA probably will not like us, so you should see something like this:</p>
+<p><img src="/graphics/monad-io-cache.png" alt="io cache output"></p>
+<p>The important bits are in the hits and misses, our IO is doing our work for us, as we now have defined a safe logic tree to repeat at a fixed interval that can help to mitigate some of the <a href="https://blogs.oracle.com/jag/resource/Fallacies.html">logical overhead of dealing with networks</a></p>
+<p>That is it for now on my thoughts of how to pair functional programming paradigms with more traditional oop concepts.  Hopefully you have seen how simple, well-thought building blocks can provide both ergonomics and safety to your code that makes it easy to reasonable about the state at any given point, while flattening your asynchronous code in a manner that limits the spaghetti.</p>
+</div></article><section class="section comments"><div class="content"><div id="disqus_thread"><script>(function() {  // DON'T EDIT BELOW THIS LINE
+var d = document, s = d.createElement('script');
+s.src = '//benjaminclos.disqus.com/embed.js';
+s.setAttribute('data-timestamp', +new Date());
+(d.head || d.body).appendChild(s);
+})();</script><noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript></div></div></section></div></div></div></div><div class="_navigation_y0853_3838 _bottom_y0853_3906 "><div class="_container_y0853_242 "><div class="_nav_y0853_1722 "><div class="_nav-center_y0853_2997 "><a class="_nav-item_y0853_2925 " href="https://github.com/ondreian"><i class="ion-social-github"></i></a><a class="_nav-item_y0853_2925 " href="https://twitter.com/benjaminclos"><i class="ion-social-twitter"></i></a></div></div></div></div></div><script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-82549801-1', 'auto');
+ga('send', 'pageview');</script></body></html>

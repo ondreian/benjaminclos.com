@@ -34,7 +34,7 @@ We don't actually know if user is `Nothing` until we look, and this can cause al
 
 It would be more meaningful to simply short-circuit this type of operation most of the time.
 
-## Call Me Maybe?
+## Creating Our Maybe
 
 We can create the `Maybe` monad by extending our previously explained `Monad`to help with this problem.
 
@@ -72,15 +72,17 @@ Since this extends the `Monad` and thus the `Function` we can transparently do s
 
 
 ```javascript
-
-const creditsInEuros = user => user.credit * 1.34 // arbitrary conversion rate
-
+// arbitrary conversion rate
+const creditsInEuros = user => user.credit * 1.34 
 const zilch = Monad.of(undefined)
 const user  = Maybe.of(undefined)
 
-console.log(creditsInEuros(undefined))  // Throws
-console.log(zilch(creditsInEuros))      // Throws as well
-console.log(user(creditsInEuros))       // Maybe<undefined> : No Error!
+console.log(creditsInEuros(undefined))
+// Throws
+console.log(zilch(creditsInEuros))
+// Throws as well
+console.log(user(creditsInEuros))       
+// Maybe<undefined> : No Error!
 
 ```
 
@@ -111,10 +113,14 @@ const
   , {Maybe}         = require("./Maybe")
   , Fred            = { name : "Fred" }
 
-// We are going to use Promise.resolve to generalize some asynchronous lookup
-Promise.resolve(null).then(Maybe).then( nonExistantUser => {
-  throw "I should have never ran"
-}).catch(console.log)
+// We are going to use Promise.resolve 
+// to generalize some asynchronous lookup
+Promise.resolve(null)
+  .then(Maybe)
+  .then( nonExistantUser => {
+    throw "I should have never ran"
+  })
+  .catch(console.log)
 
 Promise.resolve(fred).then(Maybe).then(console.log)
 /*

@@ -1,9 +1,11 @@
+@import "node_modules/bulma/sass/utilities/variables"
+
 header
   padding: 40px 0px 10px 0px
   font-size: 14px
 
   h1
-    font-size: 2.65em
+    font-size: 2em
     padding-bottom: 15px
     color: #131313
     text-transform: uppercase
@@ -48,7 +50,8 @@ article
   p
     text-align: justify
     line-height: 2em
-    padding: 0em 0em 1em 0em
+    padding: 0em
+    margin-bottom: 1em
 
   pre
     margin-bottom: 1em
@@ -56,9 +59,29 @@ article
       font-size: .9em
 
   h2
-    font-size: 2em
+    font-size: 1.25em
     text-transform: uppercase
-    padding: 0em 0em 1em 0em
+    color: #333
+    padding: 0em
+    margin-bottom: 1em
+
+    &:before
+      color: #000
+      content: ""
+      border-left: 4px solid $turquoise
+      position: absolute
+      left: -30px
+      height: 1.5em
 
   p code
     font-size: .75em
+
+  ul
+    list-style-type: square
+    margin: 0em 1em 1em 2em
+    li
+      margin: 0.5em
+
+.post-card
+  padding: 20px
+  border-left: 2px solid #f1f1f1
