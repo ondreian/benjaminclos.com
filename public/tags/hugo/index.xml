@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo on tilde</title>
+    <link>/tags/hugo/</link>
+    <description>Recent content in Hugo on tilde</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 04 Sep 2018 10:58:25 -0400</lastBuildDate>
+    
+	<atom:link href="/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>moving to hugo</title>
+      <link>/posts/moving-to-hugo/</link>
+      <pubDate>Tue, 04 Sep 2018 10:58:25 -0400</pubDate>
+      
+      <guid>/posts/moving-to-hugo/</guid>
+      <description>For awhile I&amp;rsquo;ve been struggling to keeping up with my personal writing, mainly because I was not very happy with my toolchain which made getting to the point of creating content feel more like a chore than it should have.
+A few friends of mine were chatting about how they have recently switched to the Hugo static site generator, and it seemed like it might be worth a chance. I&amp;rsquo;m a big fan of static websites and authoring via Markdown, so I hope this helps to reduce my activation energy for talking about my experiences.</description>
+    </item>
+    
+  </channel>
+</rss>

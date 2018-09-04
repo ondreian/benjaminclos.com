@@ -21,6 +21,8 @@ pygmentscodefencesguesssyntax = true
     hideCredits = true
     hideCopyright = true
 
+    custom_css=["css/app.css"]
+
 [[params.social]]
     name = "Keybase"
     icon = "fab fa-keybase fa-2x"
@@ -39,14 +41,14 @@ pygmentscodefencesguesssyntax = true
 
 
 [[menu.main]]
-    name = "Blog"
+    name = "blog"
     weight = 1
     url  = "/posts/"
 [[menu.main]]
-    name = "About"
+    name = "about"
     weight = 2
     url = "/about/"
 [[menu.main]]
-    name = "Projects"
+    name = "projects"
     weight = 3
     url = "/projects/"
