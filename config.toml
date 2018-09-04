@@ -1,0 +1,53 @@
+baseURL = "https://i.am.benjaminclos.com"
+languageCode = "en-us"
+title = "tilde"
+theme = "coder"
+
+languagecode = "en"
+
+paginate = 20
+canonifyurls = true
+
+pygmentsstyle = "b2"
+pygmentscodefences = true
+pygmentscodefencesguesssyntax = true
+
+[params]
+    author = "Benjamin Clos"
+    description = "My personal website"
+    keywords = "blog,developer,personal"
+    info = "Polyglot Programmer and Developer"
+    avatarurl = "images/avatar.jpg"
+
+    hideCredits = true
+    hideCopyright = true
+
+[[params.social]]
+    name = "Keybase"
+    icon = "fab fa-keybase fa-2x"
+    weight = 2
+    url = "https://keybase.io/ondreian"
+[[params.social]]
+    name = "Github"
+    icon = "fab fa-github fa-2x"
+    weight = 1
+    url = "https://github.com/ondreian/"
+[[params.social]]
+    name = "Twitter"
+    icon = "fab fa-twitter fa-2x"
+    weight = 3
+    url = "https://twitter.com/benjaminclos/"
+
+
+[[menu.main]]
+    name = "Blog"
+    weight = 1
+    url  = "/posts/"
+[[menu.main]]
+    name = "About"
+    weight = 2
+    url = "/about/"
+[[menu.main]]
+    name = "Projects"
+    weight = 3
+    url = "/projects/"
