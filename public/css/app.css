@@ -24,6 +24,10 @@
   color: #82B3AE;
 }
 
+.container {
+  max-width: 90rem;
+}
+
 .list ul li span {
   text-align: left;
 }
