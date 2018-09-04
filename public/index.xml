@@ -2,29 +2,29 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>tilde</title>
-    <link>https://i.am.benjaminclos.com/</link>
+    <link>/</link>
     <description>Recent content on tilde</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     
-	<atom:link href="https://i.am.benjaminclos.com/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>About</title>
-      <link>https://i.am.benjaminclos.com/about/</link>
+      <link>/about/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://i.am.benjaminclos.com/about/</guid>
+      <guid>/about/</guid>
       <description>I write code at Flowplayer</description>
     </item>
     
     <item>
       <title>Projects</title>
-      <link>https://i.am.benjaminclos.com/projects/</link>
+      <link>/projects/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://i.am.benjaminclos.com/projects/</guid>
+      <guid>/projects/</guid>
       <description>I&amp;rsquo;ve been writing code professionally for over 10 years, but I started 18 years ago for fun. During that timeframe I have worked on quite a few personal to professional projects here are my top three ranked for coolness and recency:
 Native Company: Flowplayer Tech: Javascript, SASS, Video This project consisted of a greenfield rewrite of an incredibly popular video player, where I was given several goals: a powerful api, fast performance, and reducing bundled size.</description>
     </item>
