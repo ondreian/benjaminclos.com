@@ -1,0 +1,5 @@
+# Redirect domain aliases to primary domain
+https://i.am.benjaminclos.com/* https://benjaminclos.com/:splat 301!
+
+# Optional: Redirect default Netlify subdomain to primary domain
+https://benjaminclos.netlify.com/* https://benjaminclos.com/:splat 301!
