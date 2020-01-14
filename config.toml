@@ -16,7 +16,7 @@ pygmentscodefencesguesssyntax = true
     author = "Benjamin Clos"
     description = "My personal website"
     keywords = "blog,developer,personal"
-    info = "Polyglot Programmer and Developer"
+    info = "professional computer tickler"
     avatarurl = "images/avatar.jpg"
 
     hideCredits = true
