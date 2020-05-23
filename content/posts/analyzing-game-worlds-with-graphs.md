@@ -1,8 +1,8 @@
 +++ 
 draft = false
 date = 2020-05-22T21:10:45-04:00
-title = "analyzing an RPG as a graph"
-slug = "analyzing-an-rpg-as-graph" 
+title = "analyzing an RPG World as a Graph"
+slug = "analyzing-an-rpg-world-as-graph" 
 tags = []
 categories = ["ruby", "graph"]
 +++
